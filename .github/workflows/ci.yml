@@ -36,6 +36,10 @@ jobs:
           os: "ubuntu-22.04"
           install_deps: "sudo apt-get update && sudo apt-get install -y libsodium-dev libpugixml-dev"
           cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"
+        - name: "windows-latest"
+          os: "windows-latest"
+          install_deps: "vcpkg install libsodium:x64-windows"
+          cmake_extra: "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
     steps:
     - uses: actions/checkout@v4
@@ -71,6 +75,7 @@ jobs:
           ip link
           ip addr
         fi
+      if: runner.os != 'Windows'
 
     - name: Run security tests
       working-directory: liblsl
@@ -89,7 +94,8 @@ jobs:
       timeout-minutes: 5
       if: ${{ success() || failure() }}
 
-    - name: Test security tools
+    - name: Test security tools (Unix)
+      if: runner.os != 'Windows'
       working-directory: liblsl
       env:
         LSLAPICFG: /tmp/test_lsl_api.cfg
@@ -101,6 +107,19 @@ jobs:
         echo "Testing lsl-config..."
         install/bin/lsl-config --check
         install/bin/lsl-config --show-public
+
+    - name: Test security tools (Windows)
+      if: runner.os == 'Windows'
+      working-directory: liblsl
+      env:
+        LSLAPICFG: ${{ runner.temp }}\test_lsl_api.cfg
+      run: |
+        echo "Testing lsl-keygen..."
+        install/bin/lsl-keygen.exe --help
+        install/bin/lsl-keygen.exe --force --insecure
+        echo "Testing lsl-config..."
+        install/bin/lsl-config.exe --check
+        install/bin/lsl-config.exe --show-public
 
     - name: Upload install artifacts
       uses: actions/upload-artifact@v4

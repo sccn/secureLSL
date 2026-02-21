@@ -1,0 +1,127 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - name: "macOS-arm64"
+          os: "macos-latest"
+          install_deps: "brew install libsodium"
+          cmake_extra: ""
+          artifact_name: "secureLSL-macOS-arm64"
+        - name: "linux-x64"
+          os: "ubuntu-24.04"
+          install_deps: "sudo apt-get update && sudo apt-get install -y libsodium-dev libpugixml-dev"
+          cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"
+          artifact_name: "secureLSL-linux-x64"
+        - name: "windows-x64"
+          os: "windows-latest"
+          install_deps: "vcpkg install libsodium:x64-windows"
+          cmake_extra: "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+          artifact_name: "secureLSL-windows-x64"
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: ${{ matrix.config.install_deps }}
+
+    - name: Configure CMake
+      working-directory: liblsl
+      run: |
+        cmake -S . -B build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=${PWD}/install \
+          -DLSL_SECURITY=ON \
+          -DLSL_SECURITY_TOOLS=ON \
+          -DLSL_UNITTESTS=ON \
+          -Dlslgitrevision=${{ github.sha }} \
+          -Dlslgitbranch=${{ github.ref }} \
+          ${{ matrix.config.cmake_extra }}
+
+    - name: Build
+      working-directory: liblsl
+      run: cmake --build build --target install --config Release -j
+
+    - name: Run security tests
+      working-directory: liblsl
+      run: install/bin/lsl_test_internal "[security]" --order rand --wait-for-keypress never --durations yes
+      timeout-minutes: 5
+
+    - name: Run exported tests
+      working-directory: liblsl
+      run: install/bin/lsl_test_exported --order rand --wait-for-keypress never --durations yes
+      timeout-minutes: 5
+
+    - name: Test security tools
+      working-directory: liblsl
+      env:
+        LSLAPICFG: ${{ runner.temp }}/test_lsl_api.cfg
+      run: |
+        install/bin/lsl-keygen --help
+        install/bin/lsl-keygen --force --insecure
+        install/bin/lsl-config --check
+
+    - name: Create release archive
+      working-directory: liblsl/install
+      run: |
+        # Remove test binaries from release
+        rm -f bin/lsl_test_internal* bin/lsl_test_exported*
+        rm -f bin/cpp_secure_outlet* bin/cpp_secure_inlet*
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.config.artifact_name }}
+        path: liblsl/install
+
+  release:
+    name: Create Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+
+    - name: Package release archives
+      run: |
+        cd artifacts
+        for dir in secureLSL-*; do
+          echo "Packaging $dir..."
+          if [[ "$dir" == *windows* ]]; then
+            (cd "$dir" && zip -r "../${dir}.zip" .)
+          else
+            tar -czf "${dir}.tar.gz" -C "$dir" .
+          fi
+        done
+        ls -lh secureLSL-*
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        draft: false
+        prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
+        generate_release_notes: true
+        files: |
+          artifacts/secureLSL-macOS-arm64.tar.gz
+          artifacts/secureLSL-linux-x64.tar.gz
+          artifacts/secureLSL-windows-x64.zip
