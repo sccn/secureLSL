@@ -1,0 +1,97 @@
+# Development context (not distributed)
+CLAUDE.md
+.rules/
+.context/
+.claude/
+.serena/
+internal-docs/
+
+# IDE and editors
+.vscode/
+.idea/
+.cursor/
+*.swp
+*.swo
+.DS_Store
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# C++ build artifacts
+build/
+cmake-build-*/
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.lib
+*.obj
+*.exe
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# Testing
+*.log
+logs/
+test_output/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*~
+
+# Documentation build
+docs/_build/
+site/
+
+# Package distribution
+*.tar.gz
+*.zip
+
+# Coverage reports
+coverage/
+*.gcov
+*.gcda
+*.gcno
+liblsl-Matlab/

@@ -1,0 +1,251 @@
+Copyright (C) 2025-2026 The Regents of the University of California. All Rights Reserved.
+
+Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
+
+SECURE LSL LICENSE
+
+PATENT NOTICE
+
+The algorithms, protocols, and methods embodied in this Software are the
+subject of one or more pending patent applications. Patent Pending.
+
+OWNERSHIP
+
+Secure LSL is a proprietary software product created by Seyed Yahya Shirazi
+at the Swartz Center for Computational Neuroscience (SCCN), Institute for
+Neural Computation (INC), University of California San Diego (UCSD).
+While Secure LSL incorporates certain open-source components, the deep
+integration of security throughout the codebase, the architectural changes,
+and the novel security implementations result in a fundamentally new and
+distinct proprietary product.
+
+DEFINITIONS
+
+"Software" means Secure LSL in its entirety, including all source code,
+object code, compiled binaries, algorithms, protocols, security
+implementations, architectural designs, documentation, tests, benchmarks,
+tools, scripts, configurations, build systems, and any related materials
+contained in this repository.
+
+"Repository" means the secureLSL repository and all branches, forks, copies,
+or reproductions thereof.
+
+"Licensee" means any individual or entity exercising rights under this license.
+
+"Academic Non-Profit Use" means use solely for non-commercial research,
+teaching, or educational purposes at an accredited academic institution or
+non-profit research organization. This includes academic research that
+receives funding or sponsorship from commercial entities, provided that
+the research is conducted at and directed by the academic institution, and
+the resulting use of the Software does not directly produce commercial
+products or services for the funding entity.
+
+"Commercial Use" means any use that is not Academic Non-Profit Use, including
+but not limited to: use by for-profit entities, use in commercial products or
+services, use that generates revenue, or use in government or industry
+research that is not conducted at a non-profit academic institution.
+
+GRANT OF LICENSE FOR ACADEMIC NON-PROFIT USE
+
+Subject to the terms and conditions of this license, the copyright holder
+grants a limited, non-exclusive, non-transferable, revocable license to use
+and copy the Software solely for Academic Non-Profit Use, provided that:
+
+1. The Software is used exclusively for non-commercial academic research,
+   teaching, or educational purposes.
+2. Any publications, presentations, or academic works that use or reference
+   the Software include proper citation and attribution to the copyright
+   holder and the Software.
+3. The Software is not distributed or shared outside the Licensee's
+   institution, except as reasonably necessary for collaborative academic
+   research and only to parties who agree to abide by this license.
+4. The Software is not sublicensed, sold, or transferred to any third party.
+5. This license notice and all copyright, patent, and proprietary notices are
+   retained in all copies or substantial portions of the Software.
+6. The Licensee does not use the Software, or information derived directly
+   from the Software's source code, to develop competing products or services.
+
+MODIFICATIONS
+
+Modification of the Software is not permitted under any license grant, whether
+for Academic Non-Profit Use or otherwise. The sole mechanism for contributing
+changes to the Software is by submitting a pull request to the official
+Repository, or its successor location as designated by the copyright holder.
+Upon review and acceptance by the copyright holder, merged contributions
+become part of the Software and are governed by this same license. By
+submitting a pull request, the contributor grants the copyright holder an
+irrevocable, perpetual, worldwide, royalty-free license to use, reproduce,
+modify, distribute, and sublicense the contributed changes, and acknowledges
+that the contribution will be incorporated under the terms of this license.
+
+GENERAL RESTRICTIONS
+
+The following activities are prohibited for all Licensees, regardless of
+whether the use qualifies as Academic Non-Profit Use or otherwise:
+
+1. Modifying, adapting, altering, or creating derivative works of the Software
+   (except through approved pull requests as described under MODIFICATIONS).
+2. Removing, altering, or obscuring any proprietary, patent, or copyright
+   notices.
+3. Claiming authorship or ownership of any part of the Software.
+4. Extracting, separating, or isolating any component of the Software for
+   independent use outside the context of this Software.
+5. Using the Software for benchmarking, comparison, or competitive analysis
+   without prior written permission of the copyright holder.
+6. Hosting, storing, or making the Software accessible to unauthorized parties.
+
+ADDITIONAL RESTRICTIONS ON COMMERCIAL USE
+
+Any use of the Software that does not qualify as Academic Non-Profit Use,
+including but not limited to for-profit use, commercial use, government use
+outside of academic institutions, and non-academic use, requires the express
+prior written permission of the copyright holder. Without such permission,
+the following are also strictly prohibited:
+
+1. Any Commercial Use of the Software.
+2. Distribution, sublicensing, selling, leasing, or transferring the Software
+   for non-academic purposes.
+3. Incorporating the Software into commercial products, services, or systems.
+4. Using the Software to provide services to third parties for compensation.
+5. Reverse engineering, disassembling, or decompiling the Software, except
+   to the extent such restriction is prohibited by applicable law.
+6. Using, implementing, or adapting any patented algorithms, protocols, or
+   designs from the Software for commercial purposes.
+7. Training machine learning or AI models on the Software for commercial gain.
+8. Creating competing implementations based on the Software for commercial
+   distribution.
+
+NON-ENDORSEMENT
+
+Neither the name of The Regents of the University of California, the
+University of California San Diego, the Swartz Center for Computational
+Neuroscience (SCCN), the Institute for Neural Computation (INC), nor the
+names of the author or contributors may be used to endorse or promote products
+or services that incorporate or make use of this software without specific
+prior written permission.
+
+INTELLECTUAL PROPERTY RIGHTS
+
+All intellectual property rights in the Software, including but not limited to
+copyrights, patents (pending or granted), trademarks, and any other proprietary
+rights, are and shall remain the exclusive property of The Regents of the
+University of California.
+
+The algorithms, methods, protocols, and architectural decisions embodied in
+the Software are protected by pending patent applications.
+
+SCOPE OF PROPRIETARY RIGHTS
+
+This license covers the Software in its entirety, including but not limited to:
+
+1. The Complete Secure LSL Product
+   - The entire integrated codebase as a unified proprietary work
+   - All files, directories, and subdirectories in this repository
+   - The product architecture and design as a whole
+
+2. Security Implementation (specific integrations within this Software, not
+   the underlying standard algorithms themselves)
+   - All cryptographic implementations and integrations
+   - Ed25519 device authentication system
+   - X25519 key exchange implementation
+   - ChaCha20-Poly1305 authenticated encryption integration
+   - HKDF session key derivation
+   - Argon2id passphrase-based key protection
+   - Device-bound session token system
+   - Nonce tracking and replay prevention
+   - Security handshake protocols
+   - Key management and serialization
+
+3. Patented Algorithms and Methods (Patent Pending)
+   - Security architecture and design patterns
+   - Protocol specifications and implementations
+   - API designs and interfaces
+   - Integration approaches and techniques
+   - Novel algorithms and methods
+
+ACKNOWLEDGMENT OF INCORPORATED COMPONENTS
+
+The development of Secure LSL utilized certain open-source libraries and base
+code. These incorporated components do not diminish the proprietary nature of
+Secure LSL as a complete, integrated product:
+
+- liblsl base code: Originally by Christian A. Kothe (MIT License)
+  Available separately at: https://github.com/sccn/liblsl
+- libsodium: Cryptographic primitives (ISC License)
+- pugixml: XML parsing (MIT License)
+- Boost: Utilities (Boost Software License)
+- Loguru: Logging (Public Domain)
+- Catch2: Testing framework (Boost Software License)
+
+IMPORTANT: The availability of these components under open-source licenses does
+NOT grant any rights to Secure LSL beyond what is explicitly stated in this
+license. The integration, modification, and novel implementations in this
+Repository create a new proprietary product. To use the original open-source
+components, obtain them from their original sources.
+
+TERMINATION
+
+This license is effective until terminated. The Licensee may terminate this
+license at any time by ceasing all use of the Software and destroying all
+copies in their possession. The copyright holder may revoke this license at
+any time by providing thirty (30) days written notice.
+
+If the Licensee fails to comply with any term or condition of this license,
+the copyright holder shall provide written notice specifying the breach. If
+the Licensee fails to cure the breach within thirty (30) days of receiving
+such notice, the license shall automatically terminate.
+
+Upon termination, the Licensee must cease all use of the Software and destroy
+all copies in their possession.
+
+ENFORCEMENT
+
+The copyright holder reserves all legal rights and remedies for any
+unauthorized use of the Software, including but not limited to:
+- Injunctive relief
+- Actual and statutory damages
+- Recovery of profits
+- Attorney's fees and costs
+- Enforcement of patent rights
+
+DISCLAIMER OF WARRANTIES AND LIMITATION OF LIABILITY
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+SEVERABILITY
+
+If any provision of this license is held unenforceable, it shall be modified
+to the minimum extent necessary, and remaining provisions shall continue in
+full force and effect.
+
+GOVERNING LAW
+
+This license shall be governed by and construed in accordance with the laws
+of the State of California, without regard to conflict of law principles.
+
+ENTIRE AGREEMENT
+
+This license constitutes the entire agreement regarding the Software and
+supersedes all prior agreements, representations, and understandings.
+
+CONTACT
+
+For licensing inquiries, permission requests, or other matters:
+Copyright Holder: The Regents of the University of California
+Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
+
+Office of Innovation and Commercialization (OIC)
+University of California San Diego
+9500 Gilman Dr., La Jolla, CA 92093
+Phone: (858) 534-2230
+Email: innovation@ucsd.edu
+Web: https://innovation.ucsd.edu

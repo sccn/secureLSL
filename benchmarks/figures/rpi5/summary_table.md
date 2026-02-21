@@ -1,0 +1,36 @@
+# Benchmark Results Summary
+
+| Platform | Security | Network | Channels | Rate | Latency | CPU | Jitter |
+|---|---|---|---|---|---|---|---|
+| Raspberry Pi 5 | Plaintext | Local | 8 | 1000.0 Hz | 0.08 ± 0.02 ms | 3.7% | 0.044 ms |
+| Raspberry Pi 5 | Encrypted | Local | 8 | 1000.0 Hz | 0.09 ± 0.02 ms | 4.1% | 0.038 ms |
+| Raspberry Pi 5 | Plaintext | Local | 32 | 1000.0 Hz | 0.15 ± 0.03 ms | 4.0% | 0.021 ms |
+| Raspberry Pi 5 | Encrypted | Local | 32 | 1000.0 Hz | 0.16 ± 0.02 ms | 4.6% | 0.013 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.22 ± 0.02 ms | 4.1% | 0.028 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.24 ± 0.03 ms | 5.2% | 0.047 ms |
+| Raspberry Pi 5 | Plaintext | Local | 128 | 1000.0 Hz | 0.39 ± 0.03 ms | 6.2% | 0.012 ms |
+| Raspberry Pi 5 | Encrypted | Local | 128 | 1000.0 Hz | 0.38 ± 0.03 ms | 5.4% | 0.018 ms |
+| Raspberry Pi 5 | Plaintext | Local | 256 | 1000.0 Hz | 0.54 ± 0.02 ms | 6.5% | 0.010 ms |
+| Raspberry Pi 5 | Encrypted | Local | 256 | 1000.0 Hz | 0.56 ± 0.03 ms | 6.9% | 0.028 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.25 ± 0.02 ms | 5.1% | 0.039 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.24 ± 0.03 ms | 5.0% | 0.028 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.25 ± 0.03 ms | 5.3% | 0.044 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.25 ± 0.03 ms | 5.4% | 0.044 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.25 ± 0.03 ms | 5.5% | 0.039 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.25 ± 0.03 ms | 5.5% | 0.039 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.28 ± 0.03 ms | 5.9% | 0.048 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.28 ± 0.03 ms | 5.8% | 0.049 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.28 ± 0.03 ms | 5.9% | 0.049 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.28 ± 0.05 ms | 5.8% | 0.056 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.27 ± 0.03 ms | 5.8% | 0.044 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.27 ± 0.03 ms | 5.8% | 0.045 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.27 ± 0.03 ms | 5.8% | 0.049 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.27 ± 0.03 ms | 5.7% | 0.051 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 250.0 Hz | 0.24 ± 0.03 ms | 1.1% | 0.014 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 250.0 Hz | 0.24 ± 0.03 ms | 1.2% | 0.018 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 500.0 Hz | 0.25 ± 0.03 ms | 2.6% | 0.014 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 500.0 Hz | 0.24 ± 0.03 ms | 2.6% | 0.013 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 1000.0 Hz | 0.24 ± 0.02 ms | 5.0% | 0.020 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 1000.0 Hz | 0.22 ± 0.02 ms | 4.5% | 0.019 ms |
+| Raspberry Pi 5 | Plaintext | Local | 64 | 2000.0 Hz | 0.21 ± 0.02 ms | 7.6% | 0.038 ms |
+| Raspberry Pi 5 | Encrypted | Local | 64 | 2000.0 Hz | 0.21 ± 0.02 ms | 7.8% | 0.037 ms |

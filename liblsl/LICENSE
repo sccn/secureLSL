@@ -1,0 +1,27 @@
+Copyright (C) 2025-2026 The Regents of the University of California. All Rights Reserved.
+
+Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
+
+This directory is part of Secure LSL, a proprietary software product.
+Patent Pending. Academic and non-profit use is permitted under the terms
+described in the root LICENSE.
+
+See the LICENSE file in the repository root for the complete license terms.
+
+HISTORICAL NOTE
+
+This directory contains code derived from liblsl (Lab Streaming Layer),
+originally authored by Christian A. Kothe under the MIT License. The original,
+unmodified liblsl is available at: https://github.com/sccn/liblsl
+
+All code in this directory, including both modifications and original
+components, is governed by the Secure LSL License in the repository root.
+
+THIRD-PARTY LIBRARIES
+
+This software uses the following third-party libraries:
+- pugixml (https://pugixml.org), MIT License, Copyright (C) 2006-2018 Arseny Kapoulkine
+- Boost (https://boost.org), Boost Software License
+- Loguru (https://github.com/emilk/loguru), Public Domain
+- Catch2 (https://github.com/catchorg/Catch2), Boost Software License
+- libsodium (https://libsodium.org), ISC License

@@ -1,0 +1,141 @@
+name: Secure LSL CI
+
+on:
+  push:
+    branches: ['*']
+    tags: ['*']
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      cmake_extra:
+        description: 'Extra CMake options'
+        required: false
+        default: ''
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - name: "macOS-latest"
+          os: "macos-latest"
+          install_deps: "brew install libsodium"
+          cmake_extra: ""
+        - name: "ubuntu-24.04"
+          os: "ubuntu-24.04"
+          install_deps: "sudo apt-get update && sudo apt-get install -y libsodium-dev libpugixml-dev"
+          cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"
+        - name: "ubuntu-22.04"
+          os: "ubuntu-22.04"
+          install_deps: "sudo apt-get update && sudo apt-get install -y libsodium-dev libpugixml-dev"
+          cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: ${{ matrix.config.install_deps }}
+
+    - name: Configure CMake
+      working-directory: liblsl
+      run: |
+        cmake --version
+        cmake -S . -B build \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX=${PWD}/install \
+          -DLSL_SECURITY=ON \
+          -DLSL_SECURITY_TOOLS=ON \
+          -DLSL_UNITTESTS=ON \
+          -DLSL_BUILD_EXAMPLES=ON \
+          -DCPACK_PACKAGE_DIRECTORY=${PWD}/package \
+          -Dlslgitrevision=${{ github.sha }} \
+          -Dlslgitbranch=${{ github.ref }} \
+          ${{ matrix.config.cmake_extra }} \
+          ${{ github.event.inputs.cmake_extra }}
+
+    - name: Build
+      working-directory: liblsl
+      run: cmake --build build --target install --config Release -j
+
+    - name: Print network config
+      run: |
+        if command -v ifconfig &> /dev/null; then ifconfig; fi
+        if command -v ip &> /dev/null; then
+          ip link
+          ip addr
+        fi
+
+    - name: Run security tests
+      working-directory: liblsl
+      run: install/bin/lsl_test_internal "[security]" --order rand --wait-for-keypress never --durations yes
+      timeout-minutes: 5
+
+    - name: Run internal tests
+      working-directory: liblsl
+      run: install/bin/lsl_test_internal --order rand --wait-for-keypress never --durations yes
+      timeout-minutes: 5
+      if: ${{ success() || failure() }}
+
+    - name: Run exported tests
+      working-directory: liblsl
+      run: install/bin/lsl_test_exported --order rand --wait-for-keypress never --durations yes
+      timeout-minutes: 5
+      if: ${{ success() || failure() }}
+
+    - name: Test security tools
+      working-directory: liblsl
+      env:
+        LSLAPICFG: /tmp/test_lsl_api.cfg
+      run: |
+        echo "Testing lsl-keygen..."
+        install/bin/lsl-keygen --help
+        # Use --insecure for CI (no TTY for passphrase prompt)
+        install/bin/lsl-keygen --force --insecure
+        echo "Testing lsl-config..."
+        install/bin/lsl-config --check
+        install/bin/lsl-config --show-public
+
+    - name: Upload install artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-${{ matrix.config.name }}
+        path: liblsl/install
+
+    - name: Package
+      working-directory: liblsl
+      run: |
+        cmake --build build --target package --config Release -j
+        cmake -E remove_directory package/_CPack_Packages || true
+
+    - name: Upload package artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pkg-${{ matrix.config.name }}
+        path: liblsl/package
+
+  docs:
+    name: "Build Documentation"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Doxygen
+      run: sudo apt-get update && sudo apt-get install -y doxygen
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install docs dependencies
+      run: pip install -r docs/requirements.txt
+
+    - name: Build documentation
+      run: mkdocs build --strict

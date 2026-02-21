@@ -1,0 +1,142 @@
+site_name: Secure LSL Documentation
+site_description: Transparent encryption for Lab Streaming Layer biosignal streaming
+site_author: Seyed Yahya Shirazi, SCCN, INC, UCSD
+site_url: https://sccn.github.io/secureLSL/
+copyright: Copyright &copy; 2025-2026 The Regents of the University of California. All Rights Reserved.
+
+repo_name: sccn/secureLSL
+repo_url: https://github.com/sccn/secureLSL
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - macros  # Enables {{ variable }} substitution from extra:
+  - mkdoxy:
+      projects:
+        liblsl-c:
+          src-dirs: liblsl/include/lsl
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "*.h"
+            PREDEFINED: "LIBLSL_C_API="
+            EXTRACT_ALL: "YES"
+            GENERATE_XML: "YES"
+            QUIET: "YES"
+        liblsl-cpp:
+          src-dirs: liblsl/include
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "lsl_cpp.h"
+            PREDEFINED: "LIBLSL_C_API="
+            EXTRACT_ALL: "YES"
+            GENERATE_XML: "YES"
+            QUIET: "YES"
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - tables
+  - attr_list
+  - md_in_html
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra:
+  version:
+    provider: mike
+    default: stable
+  # Current version info (update on release)
+  slsl_version:
+    base: "1.16.1"
+    security: "1.0.0"
+    stage: "alpha"
+    full: "1.16.1-secure.1.0.0-alpha"
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/sccn/secureLSL
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Quick Start: getting-started/quickstart.md
+    - Installation: getting-started/installation.md
+    - Configuration: getting-started/configuration.md
+    - Migration from LSL: getting-started/migration.md
+  - Understanding Security:
+    - Why Encryption Matters: security/why-encryption.md
+    - How It Works: security/how-it-works.md
+    - Security Model: security/security-model.md
+  - Architecture:
+    - Overview: architecture/overview.md
+  - API Reference:
+    - Overview: api/overview.md
+    - C Usage Guide: api/c-api.md
+    - C++ Usage Guide: api/cpp-api.md
+    - Python: api/python.md
+    - MATLAB: api/matlab.md
+    - C Reference (Doxygen):
+      - Functions: liblsl-c/functions.md
+      - common.h: liblsl-c/common_8h.md
+      - inlet.h: liblsl-c/inlet_8h.md
+      - outlet.h: liblsl-c/outlet_8h.md
+      - streaminfo.h: liblsl-c/streaminfo_8h.md
+      - resolver.h: liblsl-c/resolver_8h.md
+    - C++ Reference (Doxygen):
+      - Classes: liblsl-cpp/annotated.md
+      - Namespace lsl: liblsl-cpp/namespacelsl.md
+      - stream_info: liblsl-cpp/classlsl_1_1stream__info.md
+      - stream_inlet: liblsl-cpp/classlsl_1_1stream__inlet.md
+      - stream_outlet: liblsl-cpp/classlsl_1_1stream__outlet.md
+      - lsl_cpp.h: liblsl-cpp/lsl__cpp_8h.md
+  - Integration:
+    - LabRecorder: integration/labrecorder.md
+    - SigVisualizer: integration/sigvisualizer.md
+    - Custom Applications: integration/custom-apps.md
+  - Testing:
+    - Overview: testing/overview.md
+    - Unit Tests: testing/unit-tests.md
+    - Integration Tests: testing/integration-tests.md
+    - Benchmarks: testing/benchmarks.md
+    - Drop-In Compatibility: testing/drop-in-testing.md
+  - Troubleshooting: troubleshooting.md
+  - FAQ: faq.md

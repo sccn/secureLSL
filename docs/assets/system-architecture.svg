@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 672 440" width="672" height="440">
+  <style>
+    .layer { fill: #f5f5f5; stroke: #333; stroke-width: 1.5; }
+    .layer-security { fill: #e3f2fd; }
+    .layer-crypto { fill: #fff3e0; }
+    .component { fill: white; stroke: #666; stroke-width: 1; }
+    .label { font-family: Arial, sans-serif; font-size: 12px; fill: #333; }
+    .label-bold { font-family: Arial, sans-serif; font-size: 12px; fill: #333; font-weight: bold; }
+    .label-small { font-family: Arial, sans-serif; font-size: 10px; fill: #666; }
+    .title { font-family: Arial, sans-serif; font-size: 14px; fill: #333; font-weight: bold; }
+    .arrow { stroke: #333; stroke-width: 1.5; fill: none; marker-end: url(#arrowhead); }
+  </style>
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="336" y="25" text-anchor="middle" class="title">Secure LSL System Architecture</text>
+
+  <!-- Application Layer -->
+  <rect x="40" y="45" width="592" height="55" rx="4" class="layer"/>
+  <text x="336" y="65" text-anchor="middle" class="label-bold">APPLICATION LAYER</text>
+  <text x="336" y="82" text-anchor="middle" class="label-small">LabRecorder, OpenBCI, BrainVision, MATLAB, Python scripts</text>
+  <text x="336" y="94" text-anchor="middle" class="label-small" style="font-style: italic;">(No modifications required)</text>
+
+  <!-- Arrow -->
+  <line x1="336" y1="100" x2="336" y2="115" class="arrow"/>
+
+  <!-- LSL API Layer -->
+  <rect x="40" y="120" width="592" height="45" rx="4" class="layer"/>
+  <text x="336" y="140" text-anchor="middle" class="label-bold">STANDARD LSL API</text>
+  <text x="336" y="155" text-anchor="middle" class="label-small">push_sample() | pull_sample() | resolve_stream() | create_outlet() | create_inlet()</text>
+
+  <!-- Arrow -->
+  <line x1="336" y1="165" x2="336" y2="180" class="arrow"/>
+
+  <!-- Security Layer -->
+  <rect x="40" y="185" width="592" height="95" rx="4" class="layer layer-security"/>
+  <text x="336" y="205" text-anchor="middle" class="label-bold">SECURITY LAYER</text>
+
+  <!-- Security Components -->
+  <rect x="55" y="215" width="130" height="50" rx="3" class="component"/>
+  <text x="120" y="237" text-anchor="middle" class="label-bold">Key Management</text>
+  <text x="120" y="253" text-anchor="middle" class="label-small">Device identity</text>
+
+  <rect x="200" y="215" width="130" height="50" rx="3" class="component"/>
+  <text x="265" y="237" text-anchor="middle" class="label-bold">Encryption</text>
+  <text x="265" y="253" text-anchor="middle" class="label-small">Authenticated encryption</text>
+
+  <rect x="345" y="215" width="130" height="50" rx="3" class="component"/>
+  <text x="410" y="237" text-anchor="middle" class="label-bold">Decryption</text>
+  <text x="410" y="253" text-anchor="middle" class="label-small">Verify + decrypt</text>
+
+  <rect x="490" y="215" width="130" height="50" rx="3" class="component"/>
+  <text x="555" y="237" text-anchor="middle" class="label-bold">Session Control</text>
+  <text x="555" y="253" text-anchor="middle" class="label-small">Replay protection</text>
+
+  <!-- Arrow -->
+  <line x1="336" y1="280" x2="336" y2="295" class="arrow"/>
+
+  <!-- Crypto Library -->
+  <rect x="200" y="300" width="272" height="40" rx="4" class="layer layer-crypto"/>
+  <text x="336" y="320" text-anchor="middle" class="label-bold">libsodium</text>
+  <text x="336" y="333" text-anchor="middle" class="label-small">Audited cryptographic primitives</text>
+
+  <!-- Arrow -->
+  <line x1="336" y1="340" x2="336" y2="355" class="arrow"/>
+
+  <!-- Original LSL -->
+  <rect x="40" y="360" width="592" height="35" rx="4" class="layer"/>
+  <text x="336" y="383" text-anchor="middle" class="label-bold">ORIGINAL LSL CORE</text>
+
+  <!-- Arrow -->
+  <line x1="336" y1="395" x2="336" y2="410" class="arrow"/>
+
+  <!-- Network Layer -->
+  <rect x="40" y="415" width="280" height="25" rx="4" class="layer"/>
+  <text x="180" y="432" text-anchor="middle" class="label">UDP Multicast (Discovery)</text>
+
+  <rect x="352" y="415" width="280" height="25" rx="4" class="layer"/>
+  <text x="492" y="432" text-anchor="middle" class="label">TCP (Data Streaming)</text>
+</svg>
