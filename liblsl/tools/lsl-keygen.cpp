@@ -34,6 +34,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <direct.h>
 #else
 #include <termios.h>
 #include <unistd.h>

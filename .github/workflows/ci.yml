@@ -27,19 +27,19 @@ jobs:
         - name: "macOS-latest"
           os: "macos-latest"
           install_deps: "brew install libsodium"
-          cmake_extra: ""
+          cmake_extra: "-DLSL_BUILD_EXAMPLES=ON"
         - name: "ubuntu-24.04"
           os: "ubuntu-24.04"
           install_deps: "sudo apt-get update && sudo apt-get install -y libsodium-dev libpugixml-dev"
-          cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"
+          cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF -DLSL_BUILD_EXAMPLES=ON"
         - name: "ubuntu-22.04"
           os: "ubuntu-22.04"
           install_deps: "sudo apt-get update && sudo apt-get install -y libsodium-dev libpugixml-dev"
-          cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF"
+          cmake_extra: "-DLSL_BUNDLED_PUGIXML=OFF -DLSL_BUILD_EXAMPLES=ON"
         - name: "windows-latest"
           os: "windows-latest"
           install_deps: "vcpkg install libsodium:x64-windows"
-          cmake_extra: "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
+          cmake_extra: "-DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DLSL_BUILD_EXAMPLES=OFF"
 
     steps:
     - uses: actions/checkout@v4
@@ -57,7 +57,6 @@ jobs:
           -DLSL_SECURITY=ON \
           -DLSL_SECURITY_TOOLS=ON \
           -DLSL_UNITTESTS=ON \
-          -DLSL_BUILD_EXAMPLES=ON \
           -DCPACK_PACKAGE_DIRECTORY=${PWD}/package \
           -Dlslgitrevision=${{ github.sha }} \
           -Dlslgitbranch=${{ github.ref }} \
