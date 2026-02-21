@@ -27,31 +27,51 @@
 #include <cstring>
 #include <fstream>
 #include <map>
+#include <vector>
+
+#ifdef _WIN32
+#include <direct.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <io.h>
+#define stat_func _stat
+#define stat_struct struct _stat
+#else
 #include <sys/stat.h>
 #include <unistd.h>
-#include <vector>
+#define stat_func stat
+#define stat_struct struct stat
+#endif
 
 using namespace lsl::security;
 
 // Helper functions for test file/directory operations
 static void test_mkdir_p(const std::string& path) {
+#ifdef _WIN32
+    std::string cmd = "mkdir \"" + path + "\" 2>nul";
+#else
     std::string cmd = "mkdir -p \"" + path + "\"";
+#endif
     std::system(cmd.c_str());
 }
 
 static void test_rm_rf(const std::string& path) {
+#ifdef _WIN32
+    std::string cmd = "rmdir /s /q \"" + path + "\" 2>nul";
+#else
     std::string cmd = "rm -rf \"" + path + "\"";
+#endif
     std::system(cmd.c_str());
 }
 
 static bool test_file_exists(const std::string& path) {
-    struct stat buffer;
-    return (stat(path.c_str(), &buffer) == 0);
+    stat_struct buffer;
+    return (stat_func(path.c_str(), &buffer) == 0);
 }
 
 static size_t test_file_size(const std::string& path) {
-    struct stat buffer;
-    if (stat(path.c_str(), &buffer) != 0) return 0;
+    stat_struct buffer;
+    if (stat_func(path.c_str(), &buffer) != 0) return 0;
     return static_cast<size_t>(buffer.st_size);
 }
 
@@ -122,7 +142,14 @@ TEST_CASE("Key save creates directories and sets permissions", "[security][keyge
     sec.initialize();
 
     // Use a unique nested path that does not pre-exist
-    std::string test_base = "/tmp/lsl_dirtest_" +
+    std::string tmp_dir;
+#ifdef _WIN32
+    const char* tmp_env = std::getenv("TEMP");
+    tmp_dir = tmp_env ? tmp_env : "C:\\Temp";
+#else
+    tmp_dir = "/tmp";
+#endif
+    std::string test_base = tmp_dir + "/lsl_dirtest_" +
         std::to_string(std::chrono::steady_clock::now().time_since_epoch().count());
     std::string nested_config = test_base + "/sub/deep/lsl_api.cfg";
 

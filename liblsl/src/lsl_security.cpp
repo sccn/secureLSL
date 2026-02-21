@@ -27,6 +27,8 @@
 #include <windows.h>
 #include <iphlpapi.h>
 #include <direct.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #pragma comment(lib, "iphlpapi.lib")
 #else
 #include <unistd.h>
@@ -57,8 +59,13 @@ static int make_dir(const char* p) {
 
 // Check if path exists and is a directory
 static bool is_directory(const char* p) {
+#ifdef _WIN32
+    struct _stat st;
+    return _stat(p, &st) == 0 && (st.st_mode & _S_IFDIR);
+#else
     struct stat st;
     return stat(p, &st) == 0 && S_ISDIR(st.st_mode);
+#endif
 }
 
 // Recursively create directory and all parent components with mode 0700 (owner-only).
