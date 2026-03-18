@@ -1,0 +1,30 @@
+---
+# clang-tidy checks for ESP32 C project
+# Not yet integrated into CI; requires compilation database from idf.py
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  -bugprone-reserved-identifier,
+  cert-*,
+  -cert-dcl37-c,
+  -cert-dcl51-cpp,
+  clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  misc-*,
+  -misc-unused-parameters,
+  performance-*,
+  readability-braces-around-statements,
+  readability-implicit-bool-conversion,
+  readability-misleading-indentation,
+  readability-redundant-declaration,
+
+# ESP-IDF uses many macros and patterns that trigger false positives
+HeaderFilterRegex: '(benchmarks|components|examples)/.*\.h$'
+
+CheckOptions:
+  - key: readability-implicit-bool-conversion.AllowPointerConditions
+    value: true
+  - key: readability-implicit-bool-conversion.AllowIntegerConditions
+    value: true
+...

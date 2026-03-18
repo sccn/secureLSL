@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format cppcheck
+
+      - name: Install typos
+        uses: crate-ci/typos@v1.33.1
+
+      - name: Check formatting (clang-format)
+        run: |
+          find . \( -name '*.c' -o -name '*.h' \) | \
+            grep -v build/ | grep -v managed_components/ | \
+            xargs clang-format --dry-run --Werror
+
+      - name: Static analysis (cppcheck)
+        run: |
+          find . \( -name '*.c' -o -name '*.h' \) | \
+            grep -v build/ | grep -v managed_components/ | \
+            xargs cppcheck --enable=warning,style,performance \
+              --suppress=missingIncludeSystem \
+              --suppress=unusedStructMember \
+              --suppress=knownConditionTrueFalse \
+              --std=c11 --language=c \
+              --error-exitcode=1
+
+  build:
+    name: ESP-IDF Build
+    runs-on: ubuntu-latest
+    container:
+      image: espressif/idf:v5.5.3
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build all projects
+        run: |
+          . $IDF_PATH/export.sh
+          for project in \
+            tests/build_test \
+            examples/basic_outlet \
+            examples/basic_inlet \
+            examples/secure_outlet \
+            examples/secure_inlet \
+            benchmarks/crypto_bench \
+            benchmarks/throughput_bench; do
+            echo "::group::Building $project"
+            cd "$GITHUB_WORKSPACE/$project"
+            idf.py set-target esp32
+            idf.py build
+            echo "::endgroup::"
+          done
+        shell: bash
