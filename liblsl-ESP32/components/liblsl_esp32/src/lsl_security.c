@@ -163,7 +163,11 @@ int security_decrypt(lsl_security_session_t *session, uint64_t wire_nonce,
         return -1;
     }
 
-    /* Replay prevention: nonce must be strictly increasing */
+    /* Replay prevention: nonce must be strictly increasing.
+     * This is stricter than desktop secureLSL's windowed NonceTracker
+     * (which allows out-of-order within 64 nonces). The strict policy
+     * is correct for TCP (ordered delivery) and simpler for ESP32.
+     * A windowed tracker would be needed for UDP transport. */
     if (session->recv_nonce_valid && wire_nonce <= session->recv_nonce_high) {
         ESP_LOGW(TAG, "Nonce replay detected: received %llu, high=%llu",
                  (unsigned long long)wire_nonce, (unsigned long long)session->recv_nonce_high);

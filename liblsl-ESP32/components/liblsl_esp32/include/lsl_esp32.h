@@ -73,7 +73,7 @@ void lsl_esp32_destroy_streaminfo(lsl_esp32_stream_info_t info);
 #define LSL_ESP32_KEY_SBASE64_SIZE 89 /* base64 of 64-byte secret key + null */
 
 /* Generate a new Ed25519 keypair and store in NVS.
- * Requires sodium_init() to have been called.
+ * Initializes libsodium internally if needed.
  * Returns LSL_ESP32_OK on success. */
 lsl_esp32_err_t lsl_esp32_generate_keypair(void);
 

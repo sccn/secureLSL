@@ -1,3 +1,7 @@
+// Copyright (C) 2026 The Regents of the University of California. All Rights Reserved.
+// Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
+// See LICENSE in the repository root for terms.
+
 /* Build test: verifies the liblsl_esp32 component compiles and links.
  * Also serves as a smoke test for core APIs: stream info, XML, and sample format. */
 

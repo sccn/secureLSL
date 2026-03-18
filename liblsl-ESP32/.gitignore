@@ -33,3 +33,4 @@ __pycache__/
 benchmarks/results/*.png
 benchmarks/results/*.pdf
 .serena/
+.cache/

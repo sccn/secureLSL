@@ -1,3 +1,7 @@
+// Copyright (C) 2026 The Regents of the University of California. All Rights Reserved.
+// Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
+// See LICENSE in the repository root for terms.
+
 #include "bench_x25519.h"
 #include "bench_utils.h"
 #include "esp_log.h"

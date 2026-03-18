@@ -1,3 +1,7 @@
+// Copyright (C) 2026 The Regents of the University of California. All Rights Reserved.
+// Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
+// See LICENSE in the repository root for terms.
+
 #ifndef BENCH_X25519_H
 #define BENCH_X25519_H
 

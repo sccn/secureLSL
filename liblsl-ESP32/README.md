@@ -7,6 +7,23 @@
 
 A clean-room C reimplementation of the [Lab Streaming Layer (LSL)](https://github.com/sccn/liblsl) wire protocol for ESP32, enabling WiFi-connected microcontrollers to participate in LSL lab networks with optional end-to-end encryption via [secureLSL](https://github.com/sccn/secureLSL).
 
+## Scope and Intended Use
+
+liblsl-ESP32 provides the **communication layer** for streaming data over WiFi using the LSL protocol. While the ESP32 includes built-in ADC peripherals, this project focuses on the networking and protocol stack rather than signal acquisition.
+
+For biosignal applications (EEG, EMG, ECG), the ESP32 typically serves as a **wireless bridge**: a dedicated ADC integrated circuit (e.g., ADS1299, ADS1294) performs analog-to-digital conversion with the precision, noise floor, and simultaneous sampling required for research-grade recordings, while the ESP32 handles WiFi networking, LSL protocol, and optional encryption. This separation of concerns follows established practice in wireless biosignal systems and allows the communication stack to be reused across different acquisition front-ends.
+
+### Current Transport and Extensibility
+
+The current implementation uses **802.11 WiFi** as the transport layer, leveraging the ESP32's integrated WiFi radio and the lwIP TCP/IP stack. However, the protocol and encryption layers are transport-agnostic by design, operating on standard BSD sockets. Developers can replace the WiFi transport with any network interface that provides TCP/IP connectivity, including:
+
+- **Ethernet**: via SPI-connected PHY (e.g., W5500, LAN8720), providing lower latency and deterministic timing for wired lab environments
+- **Bluetooth Classic (SPP)** or **BLE**: for short-range, low-power scenarios where WiFi infrastructure is unavailable
+- **ESP-NOW**: Espressif's peer-to-peer protocol for low-latency ESP32-to-ESP32 communication without a WiFi access point
+Note that LSL and secureLSL are designed for low-latency local network environments (lab, clinic). High-latency transports (cellular, LoRa, satellite) are not suitable for the real-time streaming guarantees the protocol assumes.
+
+These transport extensions require replacing only the socket/network initialization layer while reusing the existing LSL protocol serialization, stream discovery (adapted per transport), and secureLSL encryption modules.
+
 ## Features
 
 - **Full LSL protocol**: UDP multicast discovery + TCP data streaming (protocol v1.10)
