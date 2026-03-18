@@ -1,0 +1,4 @@
+version: "0.1.0"
+description: "LSL protocol implementation for ESP32"
+dependencies:
+  espressif/libsodium: "^1.0.20~4"

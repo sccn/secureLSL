@@ -1,0 +1,19 @@
+[files]
+extend-exclude = [
+    "build/",
+    "managed_components/",
+    "sdkconfig",
+    "sdkconfig.old",
+    "LICENSE",
+]
+
+[default.extend-words]
+# ESP-IDF and libsodium terms that are not typos
+srate = "srate"         # sample rate (LSL convention)
+nsec = "nsec"           # nanoseconds / nonce section
+baud = "baud"           # serial baud rate
+keygen = "keygen"       # key generation
+scalarmult = "scalarmult"  # libsodium function name
+generichash = "generichash"  # libsodium BLAKE2b API
+HKDF = "HKDF"           # HMAC-based Key Derivation Function
+ines = "ines"            # as in "routines"

@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+# Pre-commit hook for liblsl-ESP32
+# Runs: clang-format check, cppcheck, typos
+# Install: git config core.hooksPath .githooks
+#
+# Note: checks run against working tree files (not staged content).
+# If you have unstaged changes, stage everything or stash before committing.
+
+set -euo pipefail
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+NC='\033[0m'
+
+FAILED=0
+CHECKS_RAN=0
+
+# Get staged C files
+C_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(c|h)$' || true)
+
+# 1. clang-format check
+if [ -n "$C_FILES" ]; then
+    if command -v clang-format &>/dev/null; then
+        echo -e "${YELLOW}Running clang-format...${NC}"
+        FORMAT_ERRORS=""
+        for file in $C_FILES; do
+            FMT_OUTPUT=$(clang-format --dry-run --Werror "$file" 2>&1) || {
+                FORMAT_ERRORS="$FORMAT_ERRORS $file"
+                if [ -n "$FMT_OUTPUT" ]; then
+                    echo "$FMT_OUTPUT"
+                fi
+            }
+        done
+        if [ -n "$FORMAT_ERRORS" ]; then
+            echo -e "${RED}clang-format: formatting issues in:${NC}"
+            for file in $FORMAT_ERRORS; do
+                echo "  $file"
+            done
+            echo -e "  Run: clang-format -i$FORMAT_ERRORS"
+            FAILED=1
+        else
+            echo -e "${GREEN}clang-format: OK${NC}"
+        fi
+        CHECKS_RAN=$((CHECKS_RAN + 1))
+    else
+        echo -e "${YELLOW}clang-format not found, skipping${NC}"
+    fi
+
+    # 2. cppcheck
+    if command -v cppcheck &>/dev/null; then
+        echo -e "${YELLOW}Running cppcheck...${NC}"
+        CPPCHECK_FAILED=0
+        CPPCHECK_OUT=$(cppcheck --enable=warning,style,performance \
+            --suppress=missingIncludeSystem \
+            --suppress=unusedStructMember \
+            --suppress=knownConditionTrueFalse \
+            --std=c11 --language=c \
+            --error-exitcode=1 \
+            $C_FILES 2>&1) || {
+            echo -e "${RED}cppcheck: issues found:${NC}"
+            echo "$CPPCHECK_OUT"
+            CPPCHECK_FAILED=1
+            FAILED=1
+        }
+        if [ $CPPCHECK_FAILED -eq 0 ]; then
+            echo -e "${GREEN}cppcheck: OK${NC}"
+        fi
+        CHECKS_RAN=$((CHECKS_RAN + 1))
+    else
+        echo -e "${YELLOW}cppcheck not found, skipping${NC}"
+    fi
+fi
+
+# 3. typos (all staged files)
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM || true)
+if [ -n "$STAGED_FILES" ]; then
+    if command -v typos &>/dev/null; then
+        echo -e "${YELLOW}Running typos...${NC}"
+        if ! echo "$STAGED_FILES" | xargs typos; then
+            echo -e "${RED}typos: spelling errors found${NC}"
+            FAILED=1
+        else
+            echo -e "${GREEN}typos: OK${NC}"
+        fi
+        CHECKS_RAN=$((CHECKS_RAN + 1))
+    else
+        echo -e "${YELLOW}typos not found, skipping${NC}"
+    fi
+fi
+
+if [ $FAILED -ne 0 ]; then
+    echo -e "\n${RED}Pre-commit checks failed. Fix issues above or use --no-verify to skip.${NC}"
+    exit 1
+fi
+
+if [ $CHECKS_RAN -eq 0 ]; then
+    echo -e "\n${YELLOW}No pre-commit checks ran (no tools installed or no files staged).${NC}"
+    echo -e "${YELLOW}Install: brew install clang-format cppcheck typos-cli${NC}"
+else
+    echo -e "\n${GREEN}All pre-commit checks passed.${NC}"
+fi

@@ -1,0 +1,25 @@
+# ESP32 target
+CONFIG_IDF_TARGET="esp32"
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# Stack size for main task
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=10240
+
+# Logging (INFO for benchmark output)
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# WiFi
+CONFIG_ESP_WIFI_SSID="your_ssid"
+CONFIG_ESP_WIFI_PASSWORD="your_password"
+
+# IGMP for multicast (LSL discovery)
+CONFIG_LWIP_IGMP=y
+
+# 1000Hz tick rate for precise timing
+CONFIG_FREERTOS_HZ=1000
+
+# Extended watchdog timeout for long benchmarks
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=120
+
+# Performance optimization
+CONFIG_COMPILER_OPTIMIZATION_PERF=y

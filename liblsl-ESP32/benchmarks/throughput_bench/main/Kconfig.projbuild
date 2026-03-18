@@ -1,0 +1,85 @@
+menu "Benchmark Configuration"
+
+    choice BENCH_MODE
+        prompt "Benchmark mode"
+        default BENCH_MODE_OUTLET
+        help
+            Select whether to run as outlet (push) or inlet (pull).
+
+        config BENCH_MODE_OUTLET
+            bool "Outlet (push samples)"
+
+        config BENCH_MODE_INLET
+            bool "Inlet (pull samples)"
+    endchoice
+
+    config BENCH_CHANNELS
+        int "Number of channels"
+        default 8
+        range 1 128
+        help
+            Number of float32 channels per sample.
+
+    config BENCH_SAMPLE_RATE
+        int "Sampling rate (Hz)"
+        default 250
+        range 1 1000
+        help
+            Nominal sampling rate in Hz.
+
+    config BENCH_DURATION
+        int "Test duration (seconds)"
+        default 60
+        range 0 3600
+        help
+            Duration of the benchmark. 0 = run until reset.
+
+    config BENCH_REPORT_INTERVAL
+        int "Report interval (seconds)"
+        default 5
+        range 1 60
+        help
+            Seconds between serial progress reports.
+
+    config BENCH_STREAM_NAME
+        string "Stream name (outlet mode)"
+        default "ESP32Bench"
+        help
+            LSL stream name when running as outlet.
+
+    config BENCH_TARGET_STREAM
+        string "Target stream name (inlet mode)"
+        default "DesktopBench"
+        help
+            LSL stream name to resolve when running as inlet.
+
+    config BENCH_SECURITY_ENABLE
+        bool "Enable secureLSL encryption"
+        default n
+        help
+            Enable encrypted streaming. Requires keypair in NVS
+            or configured below.
+
+    config ESP_WIFI_SSID
+        string "WiFi SSID"
+        default "your_ssid"
+
+    config ESP_WIFI_PASSWORD
+        string "WiFi Password"
+        default "your_password"
+
+    config ESP_MAXIMUM_RETRY
+        int "Maximum WiFi retries"
+        default 10
+
+    config LSL_SECURITY_PUBKEY
+        string "secureLSL public key (base64)"
+        default ""
+        depends on BENCH_SECURITY_ENABLE
+
+    config LSL_SECURITY_PRIVKEY
+        string "secureLSL private key (base64)"
+        default ""
+        depends on BENCH_SECURITY_ENABLE
+
+endmenu

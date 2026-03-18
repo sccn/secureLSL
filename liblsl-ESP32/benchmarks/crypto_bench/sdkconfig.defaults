@@ -1,0 +1,20 @@
+# ESP32 target configuration
+CONFIG_IDF_TARGET="esp32"
+
+# CPU frequency: max performance for benchmarking
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# Task watchdog: increase timeout for long benchmarks
+CONFIG_ESP_TASK_WDT_TIMEOUT_S=30
+
+# Serial output baud rate
+CONFIG_ESP_CONSOLE_UART_BAUDRATE=115200
+
+# Optimization: performance mode
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
+
+# Stack size for main task (libsodium needs stack space)
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+
+# Logging level: info (not debug/verbose)
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y

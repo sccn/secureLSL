@@ -1,0 +1,3 @@
+numpy>=1.24
+pylsl>=1.16
+pyserial>=3.5

@@ -1,0 +1,39 @@
+menu "Example Configuration"
+
+    config ESP_WIFI_SSID
+        string "WiFi SSID"
+        default "your_ssid"
+        help
+            SSID (network name) to connect to.
+
+    config ESP_WIFI_PASSWORD
+        string "WiFi Password"
+        default "your_password"
+        help
+            WiFi password (WPA2).
+
+    config ESP_MAXIMUM_RETRY
+        int "Maximum WiFi connection retries"
+        default 10
+        help
+            Number of times to retry WiFi connection before giving up.
+
+    config LSL_SECURITY_PUBKEY
+        string "secureLSL public key (base64)"
+        default ""
+        help
+            Base64-encoded Ed25519 public key. Must match all devices in the lab.
+
+    config LSL_SECURITY_PRIVKEY
+        string "secureLSL private key (base64)"
+        default ""
+        help
+            Base64-encoded Ed25519 private key (64 bytes).
+
+    config LSL_TARGET_STREAM
+        string "Target stream name"
+        default "DesktopTest"
+        help
+            Name of the LSL stream to connect to.
+
+endmenu

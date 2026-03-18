@@ -1,0 +1,19 @@
+# ESP32 target
+CONFIG_IDF_TARGET="esp32"
+CONFIG_ESP_DEFAULT_CPU_FREQ_MHZ_240=y
+
+# Stack size for main task (resolver + inlet need stack space)
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=8192
+
+# Logging
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# WiFi
+CONFIG_ESP_WIFI_SSID="your_ssid"
+CONFIG_ESP_WIFI_PASSWORD="your_password"
+
+# IGMP for multicast support (required for LSL discovery)
+CONFIG_LWIP_IGMP=y
+
+# 1000Hz tick rate for precise sample timing
+CONFIG_FREERTOS_HZ=1000

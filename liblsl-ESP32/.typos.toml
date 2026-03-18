@@ -1,0 +1,3 @@
+[default.extend-words]
+# "ser" is a common Python abbreviation for serial.Serial()
+ser = "ser"

@@ -88,9 +88,9 @@ extra:
   # Current version info (update on release)
   slsl_version:
     base: "1.16.1"
-    security: "1.0.0"
+    security: "1.1.0"
     stage: "alpha"
-    full: "1.16.1-secure.1.0.0-alpha"
+    full: "1.16.1-secure.1.1.0-alpha"
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/sccn/secureLSL
@@ -128,6 +128,8 @@ nav:
       - stream_inlet: liblsl-cpp/classlsl_1_1stream__inlet.md
       - stream_outlet: liblsl-cpp/classlsl_1_1stream__outlet.md
       - lsl_cpp.h: liblsl-cpp/lsl__cpp_8h.md
+  - ESP32:
+    - Overview: esp32/overview.md
   - Integration:
     - LabRecorder: integration/labrecorder.md
     - SigVisualizer: integration/sigvisualizer.md

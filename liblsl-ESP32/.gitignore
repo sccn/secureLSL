@@ -1,0 +1,36 @@
+# Build artifacts
+build/
+sdkconfig.old
+sdkconfig
+
+# ESP-IDF managed components (fetched automatically)
+managed_components/
+dependencies.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# clangd cache
+.cache/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+
+# Environment
+.env
+
+# macOS
+.DS_Store
+
+# Benchmark results (keep raw data, ignore generated)
+benchmarks/results/*.png
+benchmarks/results/*.pdf
+.serena/
+.cache/
