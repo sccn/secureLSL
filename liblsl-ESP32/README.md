@@ -28,7 +28,7 @@ These transport extensions require replacing only the socket/network initializat
 
 - **Full LSL protocol**: UDP multicast discovery + TCP data streaming (protocol v1.10)
 - **Bidirectional**: both outlet (push) and inlet (pull) support
-- **secureLSL encryption**: ChaCha20-Poly1305 authenticated encryption, Ed25519 key exchange
+- **secureLSL encryption**: ChaCha20-Poly1305 authenticated encryption, X25519 key exchange (Ed25519 identity)
 - **Desktop interop**: verified with pylsl, LabRecorder, and desktop secureLSL
 - **Lightweight**: ~4000 lines of C, ~200KB SRAM footprint (300KB+ free for application)
 - **Real-time**: sustains up to 1000 Hz sampling with near-zero packet loss

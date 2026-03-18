@@ -2,6 +2,8 @@
 
 Secure LSL includes a protocol-compatible implementation for ESP32 microcontrollers, enabling WiFi-connected embedded devices to participate in encrypted LSL lab networks.
 
+---
+
 ## Overview
 
 **liblsl-ESP32** is a clean-room C reimplementation of the LSL wire protocol for ESP32, with full secureLSL encryption support. It is not a port of desktop liblsl; it reimplements the protocol from scratch using ESP-IDF native APIs.
@@ -14,13 +16,13 @@ The current implementation uses 802.11 WiFi, but the protocol and encryption lay
 
 ### Why a Reimplementation?
 
-Desktop liblsl is ~50,000+ lines of C++ coupled to Boost, pugixml, and C++ features (exceptions, RTTI) that are impractical on a device with 520KB SRAM. The LSL wire protocol is simple (UDP discovery, TCP streamfeed, binary samples), making a clean C reimplementation (~4,100 lines) both smaller and more maintainable.
+Desktop liblsl is ~50,000+ lines of C++ coupled to Boost, pugixml, and C++ features (exceptions, RTTI) that are impractical on a device with 520KB SRAM. The LSL wire protocol is simple (UDP discovery, TCP streamfeed, binary samples), making a clean C reimplementation (~4,000 lines) both smaller and more maintainable.
 
 ### Features
 
 - **Full LSL protocol**: UDP multicast discovery + TCP data streaming (v1.10)
 - **Bidirectional**: both outlet (push) and inlet (pull)
-- **secureLSL encryption**: ChaCha20-Poly1305, Ed25519 key exchange, wire-compatible with desktop
+- **secureLSL encryption**: ChaCha20-Poly1305 authenticated encryption, X25519 key exchange (from Ed25519 identity keys)
 - **Desktop interop**: verified with pylsl, LabRecorder, and desktop secureLSL
 - **Real-time**: sustains up to 1000 Hz with near-zero packet loss
 - **Lightweight**: ~200KB SRAM footprint, 300KB+ free for application
@@ -34,6 +36,8 @@ Desktop liblsl is ~50,000+ lines of C++ coupled to Boost, pugixml, and C++ featu
 | Flash | 2MB+ | 4MB |
 | WiFi | 802.11 b/g/n | 2.4GHz |
 
+---
+
 ## Quick Start
 
 ### Prerequisites
@@ -41,6 +45,7 @@ Desktop liblsl is ~50,000+ lines of C++ coupled to Boost, pugixml, and C++ featu
 - [ESP-IDF v5.5+](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/get-started/)
 - ESP32 development board
 - WiFi network shared with desktop
+- For encrypted streaming: desktop Secure LSL (see [Installation](../getting-started/installation.md))
 
 ### 1. Flash the secure outlet example
 
@@ -52,14 +57,11 @@ idf.py build
 idf.py -p /dev/cu.usbserial-XXXX flash monitor
 ```
 
-### 2. Receive on desktop with secureLSL
+### 2. Receive on desktop with Secure LSL
+
+Ensure you have built Secure LSL with security enabled (see [Installation](../getting-started/installation.md)), then:
 
 ```bash
-# Build secureLSL with security enabled
-cd liblsl/build
-cmake .. -DLSL_SECURITY=ON && cmake --build . --parallel
-
-# Receive encrypted stream
 ./cpp_secure_inlet --stream ESP32Secure --samples 100
 ```
 
@@ -78,11 +80,18 @@ inlet = pylsl.StreamInlet(streams[0])
 sample, ts = inlet.pull_sample()
 ```
 
+---
+
 ## Security Setup
 
-The ESP32 uses the same Ed25519 shared keypair model as desktop secureLSL.
+The ESP32 uses the same shared keypair model as desktop Secure LSL. All devices in a lab must share the same Ed25519 keypair.
+
+!!! warning "All devices must share the same keypair"
+    The ESP32 and desktop must have identical Ed25519 keypairs. Mismatched keys result in a 403 connection rejection (unanimous security enforcement).
 
 ### Key Provisioning
+
+The recommended workflow is to generate keys on the desktop using `lsl-keygen`, then import them to the ESP32:
 
 ```c
 #include "lsl_esp32.h"
@@ -90,15 +99,28 @@ The ESP32 uses the same Ed25519 shared keypair model as desktop secureLSL.
 
 nvs_flash_init();
 
-// Option A: Generate new keypair on ESP32
-lsl_esp32_generate_keypair();
-
-// Option B: Import desktop keypair
+// Import the desktop keypair (recommended)
 lsl_esp32_import_keypair("BASE64_PUBLIC_KEY", "BASE64_PRIVATE_KEY");
 
 // Enable encryption for all subsequent outlets/inlets
 lsl_esp32_enable_security();
 ```
+
+Alternatively, generate a new keypair on the ESP32 and distribute it to all devices:
+
+```c
+lsl_esp32_generate_keypair();
+
+// Export public key for distribution to desktop and other devices
+char pubkey[LSL_ESP32_KEY_BASE64_SIZE];
+lsl_esp32_export_pubkey(pubkey, sizeof(pubkey));
+// Import the full keypair to desktop via lsl_api.cfg
+```
+
+!!! note "No passphrase support on ESP32"
+    The ESP32 stores raw (unencrypted) Ed25519 keys in NVS. It does not support passphrase-protected keys (`encrypted_private_key`). When configuring the desktop `lsl_api.cfg` for ESP32 interop, use the `private_key` field (unencrypted format, generated with `lsl-keygen --insecure`) rather than the default `encrypted_private_key`.
+
+### Desktop Configuration
 
 The desktop must have the matching keypair in `~/.lsl_api/lsl_api.cfg`:
 
@@ -108,14 +130,9 @@ enabled = true
 private_key = YOUR_BASE64_PRIVATE_KEY
 ```
 
-### Extracting Keys from Desktop Config
+For key extraction and distribution details, see the [ESP32 Security Guide](https://github.com/sccn/secureLSL/blob/main/liblsl-ESP32/docs/security.md).
 
-```python
-import base64
-sk = base64.b64decode("YOUR_PRIVATE_KEY_BASE64")
-pk_b64 = base64.b64encode(sk[32:]).decode()  # Public key is last 32 bytes
-print(f"Public key: {pk_b64}")
-```
+---
 
 ## API Overview
 
@@ -136,23 +153,30 @@ lsl_esp32_inlet_pull_sample_f(inlet, buf, buf_len, &timestamp, 5.0);
 
 // Security
 lsl_esp32_generate_keypair();
+lsl_esp32_import_keypair(base64_pub, base64_priv);
+lsl_esp32_export_pubkey(out, out_len);
+lsl_esp32_has_keypair();
 lsl_esp32_enable_security();
 ```
 
-Full API: [`liblsl-ESP32/components/liblsl_esp32/include/lsl_esp32.h`](../../liblsl-ESP32/components/liblsl_esp32/include/lsl_esp32.h)
+Full API: [lsl_esp32.h on GitHub](https://github.com/sccn/secureLSL/blob/main/liblsl-ESP32/components/liblsl_esp32/include/lsl_esp32.h)
+
+---
 
 ## Performance
 
 Benchmarked on ESP32-DevKitC v4 over WiFi (802.11n, RSSI -36 dBm):
 
-| Config | Rate | Packet Loss | Encryption Overhead |
-|--------|------|-------------|-------------------|
-| 8ch float32 | 250 Hz | 0% | Not measurable (async) |
-| 8ch float32 | 500 Hz | 0% | Not measurable (async) |
-| 8ch float32 | 1000 Hz | 0.02% | Not measurable (async) |
-| 64ch float32 | 250 Hz | 0% | Not measurable (async) |
+| Config | Rate | Packet Loss | Encryption Cost |
+|--------|------|-------------|-----------------|
+| 8ch float32 | 250 Hz | 0% | 2 KB heap (push async) |
+| 8ch float32 | 500 Hz | 0% | 2 KB heap (push async) |
+| 8ch float32 | 1000 Hz | 0.02% | 2 KB heap (push async) |
+| 64ch float32 | 250 Hz | 0% | 2 KB heap (push async) |
 
-Encryption runs asynchronously on core 1 in the TCP feed task, while the application pushes to a lock-free ring buffer on core 0. The 2KB heap overhead for security sessions is the only measurable cost.
+Encryption (ChaCha20-Poly1305) runs asynchronously on core 1 in the TCP feed task, while the application pushes to a lock-free ring buffer on core 0. The encryption overhead is not observable on the application push path; the 2 KB heap overhead for security sessions is the only measurable cost.
+
+---
 
 ## Protocol Compatibility
 
@@ -165,6 +189,8 @@ Encryption runs asynchronously on core 1 in the TCP feed task, while the applica
 | Max connections | Unlimited | 3 concurrent |
 | Max channels | Unlimited | 128 |
 
+---
+
 ## Examples
 
 | Example | Description |
@@ -174,11 +200,13 @@ Encryption runs asynchronously on core 1 in the TCP feed task, while the applica
 | `secure_outlet` | Encrypted outlet with key provisioning |
 | `secure_inlet` | Encrypted receiver |
 
+---
+
 ## Documentation
 
-For detailed documentation, see:
+For detailed documentation, see the [liblsl-ESP32 repository](https://github.com/sccn/secureLSL/tree/main/liblsl-ESP32):
 
-- [Architecture](../../liblsl-ESP32/docs/architecture.md) -- protocol layers, threading, memory
-- [Security Guide](../../liblsl-ESP32/docs/security.md) -- key provisioning, setup, troubleshooting
-- [Benchmarks](../../liblsl-ESP32/docs/benchmarks.md) -- methodology and full results
-- [Changelog](../../liblsl-ESP32/CHANGELOG.md) -- version history
+- [Architecture](https://github.com/sccn/secureLSL/blob/main/liblsl-ESP32/docs/architecture.md) -- protocol layers, threading, memory
+- [Security Guide](https://github.com/sccn/secureLSL/blob/main/liblsl-ESP32/docs/security.md) -- key provisioning, setup, troubleshooting
+- [Benchmarks](https://github.com/sccn/secureLSL/blob/main/liblsl-ESP32/docs/benchmarks.md) -- methodology and full results
+- [Changelog](https://github.com/sccn/secureLSL/blob/main/liblsl-ESP32/CHANGELOG.md) -- version history
