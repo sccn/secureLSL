@@ -13,8 +13,9 @@ Secure LSL is a drop-in replacement for [liblsl](https://github.com/sccn/liblsl)
 - **Device authentication**: Ed25519 digital signatures
 - **Replay attack prevention**: Monotonic nonce tracking
 - **Zero code changes**: Existing applications work unmodified
-- **Cross-platform**: macOS, Linux, Windows (x86_64, ARM)
+- **Cross-platform**: macOS, Linux, Windows (x86_64, ARM), ESP32 (WiFi)
 - **Full interoperability**: Python, MATLAB, C++, C# all work together
+- **Embedded support**: ESP32 microcontrollers with wire-compatible encryption ([details](docs/esp32/overview.md))
 
 ## Quick Start
 
@@ -96,6 +97,7 @@ The secure library uses a distinct name to prevent confusion:
 | macOS | `liblsl.dylib` | `liblsl-secure.dylib` |
 | Linux | `liblsl.so` | `liblsl-secure.so` |
 | Windows | `lsl.dll` | `lsl-secure.dll` |
+| ESP32 | `liblsl_esp32` (component) | Built-in (same component) |
 
 ## Version Information
 
