@@ -19,7 +19,7 @@ set(LSL_ABI_VERSION 2)
 # Minor: New features (new API functions, new config options)
 # Patch: Bug fixes, security patches
 set(LSL_SECURITY_VERSION_MAJOR 1)
-set(LSL_SECURITY_VERSION_MINOR 0)
+set(LSL_SECURITY_VERSION_MINOR 1)
 set(LSL_SECURITY_VERSION_PATCH 0)
 set(LSL_SECURITY_STAGE "alpha")  # "alpha", "beta", "rc.N", or "" for stable
 
