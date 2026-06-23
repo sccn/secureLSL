@@ -45,6 +45,22 @@
 
 using namespace lsl::security;
 
+// Portable environment set/unset (MSVC lacks the POSIX setenv/unsetenv).
+static void test_setenv(const char* key, const char* value) {
+#ifdef _WIN32
+    _putenv_s(key, value);
+#else
+    setenv(key, value, 1);
+#endif
+}
+static void test_unsetenv(const char* key) {
+#ifdef _WIN32
+    _putenv_s(key, "");
+#else
+    unsetenv(key);
+#endif
+}
+
 // Helper functions for test file/directory operations
 static void test_mkdir_p(const std::string& path) {
 #ifdef _WIN32
@@ -323,6 +339,98 @@ TEST_CASE("Session key derivation", "[security][keyexchange]") {
         CHECK(SESSION_KEY_SIZE == 32);
         CHECK(SHARED_SECRET_SIZE == 32);
     }
+}
+
+TEST_CASE("Ephemeral session key exchange", "[security][keyexchange][ephemeral]") {
+    auto& sec = LSLSecurity::instance();
+    sec.initialize();
+
+    // Provision a shared long-term keypair in a temp config and load it, so the
+    // ephemeral derivation (which binds to the static public key) has credentials.
+    std::string test_dir = "/tmp/lsl_eph_test_" +
+        std::to_string(std::chrono::steady_clock::now().time_since_epoch().count());
+    std::string config_path = test_dir + "/lsl_api.cfg";
+    test_mkdir_p(test_dir);
+    REQUIRE(sec.generate_and_save_keypair(config_path, true, "") == SecurityResult::SUCCESS);
+    test_setenv("LSLAPICFG", config_path.c_str());
+    REQUIRE(sec.load_credentials() == SecurityResult::SUCCESS);
+
+    // One authenticated ephemeral exchange between an initiator and a responder
+    // that share the loaded keypair; returns the (equal) session keys derived by
+    // both ends. This mirrors exactly what the TCP handshake does.
+    auto run_exchange = [&](std::array<uint8_t, SESSION_KEY_SIZE>& key_init,
+                            std::array<uint8_t, SESSION_KEY_SIZE>& key_resp) {
+        std::array<uint8_t, 32> ip, is, rp, rs;
+        REQUIRE(sec.generate_ephemeral_keypair(ip, is) == SecurityResult::SUCCESS);
+        REQUIRE(sec.generate_ephemeral_keypair(rp, rs) == SecurityResult::SUCCESS);
+        // Mirror the handshake: each side signs its ephemeral public key and the
+        // peer verifies that signature with the shared key before deriving.
+        std::array<uint8_t, SIGNATURE_SIZE> sig_i, sig_r;
+        REQUIRE(sec.sign(ip.data(), ip.size(), sig_i) == SecurityResult::SUCCESS);
+        REQUIRE(sec.sign(rp.data(), rp.size(), sig_r) == SecurityResult::SUCCESS);
+        REQUIRE(sec.verify(rp.data(), rp.size(), sig_r, sec.get_public_key()) ==
+            SecurityResult::SUCCESS);
+        REQUIRE(sec.verify(ip.data(), ip.size(), sig_i, sec.get_public_key()) ==
+            SecurityResult::SUCCESS);
+        REQUIRE(sec.derive_session_key_ephemeral(is, rp, key_init) == SecurityResult::SUCCESS);
+        REQUIRE(sec.derive_session_key_ephemeral(rs, ip, key_resp) == SecurityResult::SUCCESS);
+    };
+
+    SECTION("ephemeral keypairs are fresh on each call") {
+        std::array<uint8_t, 32> p1, s1, p2, s2;
+        REQUIRE(sec.generate_ephemeral_keypair(p1, s1) == SecurityResult::SUCCESS);
+        REQUIRE(sec.generate_ephemeral_keypair(p2, s2) == SecurityResult::SUCCESS);
+        CHECK(p1 != p2);
+        CHECK(s1 != s2);
+    }
+
+    SECTION("initiator and responder derive the same session key") {
+        std::array<uint8_t, SESSION_KEY_SIZE> ki, kr;
+        run_exchange(ki, kr);
+        CHECK(ki == kr);
+    }
+
+    SECTION("independent sessions derive different keys") {
+        std::array<uint8_t, SESSION_KEY_SIZE> k1a, k1b, k2a, k2b;
+        run_exchange(k1a, k1b);
+        run_exchange(k2a, k2b);
+        CHECK(k1a != k2a);  // the property the constant-key derivation violated
+    }
+
+    SECTION("identical plaintext at nonce 1 yields different ciphertext across sessions") {
+        // The headline regression: with the old constant session key, two sessions
+        // encrypting the same plaintext at nonce 1 produced byte-identical ciphertext
+        // (catastrophic keystream/nonce reuse). With per-session ephemeral keys they differ.
+        std::array<uint8_t, SESSION_KEY_SIZE> k1, k1r, k2, k2r;
+        run_exchange(k1, k1r);
+        run_exchange(k2, k2r);
+        const std::vector<uint8_t> plain = {1, 2, 3, 4, 5, 6, 7, 8};
+        std::vector<uint8_t> c1(plain.size() + AUTH_TAG_SIZE), c2(plain.size() + AUTH_TAG_SIZE);
+        std::copy(plain.begin(), plain.end(), c1.begin());
+        std::copy(plain.begin(), plain.end(), c2.begin());
+        size_t l1 = 0, l2 = 0;
+        REQUIRE(sec.encrypt(c1.data(), plain.size(), 1, k1, l1) == SecurityResult::SUCCESS);
+        REQUIRE(sec.encrypt(c2.data(), plain.size(), 1, k2, l2) == SecurityResult::SUCCESS);
+        CHECK(c1 != c2);
+    }
+
+    SECTION("ephemeral-key signature verifies and rejects tampering") {
+        std::array<uint8_t, 32> ep, es;
+        REQUIRE(sec.generate_ephemeral_keypair(ep, es) == SecurityResult::SUCCESS);
+        std::array<uint8_t, SIGNATURE_SIZE> sig;
+        REQUIRE(sec.sign(ep.data(), ep.size(), sig) == SecurityResult::SUCCESS);
+        CHECK(sec.verify(ep.data(), ep.size(), sig, sec.get_public_key()) == SecurityResult::SUCCESS);
+        auto tampered = ep;
+        tampered[0] ^= 0x01;
+        CHECK(sec.verify(tampered.data(), tampered.size(), sig, sec.get_public_key()) !=
+            SecurityResult::SUCCESS);
+    }
+
+    test_unsetenv("LSLAPICFG");
+    test_rm_rf(test_dir);
+    // This test loaded credentials into the process-global singleton, enabling
+    // security; reset it so later non-security tests see a clean state.
+    sec.reset();
 }
 
 TEST_CASE("Base64 encoding/decoding", "[security][base64]") {

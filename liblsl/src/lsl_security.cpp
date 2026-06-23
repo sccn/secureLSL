@@ -557,6 +557,23 @@ SecurityResult LSLSecurity::load_credentials() {
     return SecurityResult::CONFIG_NOT_FOUND;
 }
 
+void LSLSecurity::reset() {
+    // Return to the initialized-but-unconfigured state without touching the
+    // libsodium initialization. Used for test isolation in this process-global
+    // singleton so a credential-loading test does not enable security for later
+    // tests.
+    enabled_ = false;
+    credentials_loaded_ = false;
+    key_locked_ = false;
+    has_encrypted_key_ = false;
+    secure_zero(secret_key_.data(), secret_key_.size());
+    secure_zero(x25519_secret_key_.data(), x25519_secret_key_.size());
+    public_key_.fill(0);
+    secret_key_.fill(0);
+    x25519_public_key_.fill(0);
+    x25519_secret_key_.fill(0);
+}
+
 SecurityResult LSLSecurity::convert_ed25519_to_x25519() {
     // Convert Ed25519 public key to X25519
     if (crypto_sign_ed25519_pk_to_curve25519(
@@ -765,47 +782,78 @@ uint32_t LSLSecurity::get_session_key_lifetime() const {
     return session_key_lifetime_;
 }
 
-SecurityResult LSLSecurity::derive_session_key(
-    const std::array<uint8_t, PUBLIC_KEY_SIZE>& peer_public_key,
-    std::array<uint8_t, SESSION_KEY_SIZE>& session_key,
-    bool is_initiator) {
+SecurityResult LSLSecurity::generate_ephemeral_keypair(
+    std::array<uint8_t, 32>& eph_public,
+    std::array<uint8_t, 32>& eph_secret) {
+
+    if (!initialized_) {
+        return SecurityResult::NOT_INITIALIZED;
+    }
+
+    // Fresh X25519 keypair for this connection only.
+    if (crypto_box_keypair(eph_public.data(), eph_secret.data()) != 0) {
+        return SecurityResult::KEY_GENERATION_FAILED;
+    }
+
+    return SecurityResult::SUCCESS;
+}
+
+SecurityResult LSLSecurity::derive_session_key_ephemeral(
+    const std::array<uint8_t, 32>& own_eph_secret,
+    const std::array<uint8_t, 32>& peer_eph_public,
+    std::array<uint8_t, SESSION_KEY_SIZE>& session_key) {
 
     if (!initialized_ || !credentials_loaded_) {
         return SecurityResult::NOT_INITIALIZED;
     }
 
-    // Convert peer's Ed25519 public key to X25519
-    std::array<uint8_t, 32> peer_x25519;
-    if (crypto_sign_ed25519_pk_to_curve25519(peer_x25519.data(), peer_public_key.data()) != 0) {
-        return SecurityResult::INVALID_KEY;
-    }
-
-    // X25519 key agreement
+    // Ephemeral X25519 agreement: shared = X25519(own_eph_secret, peer_eph_public).
+    // Because both ephemeral keys are random and fresh per connection, this shared
+    // secret is unique per session and is forgotten once the secrets are zeroed.
     std::array<uint8_t, crypto_scalarmult_BYTES> shared_secret;
-    if (crypto_scalarmult(shared_secret.data(), x25519_secret_key_.data(), peer_x25519.data()) != 0) {
+    if (crypto_scalarmult(shared_secret.data(), own_eph_secret.data(),
+            peer_eph_public.data()) != 0) {
+        return SecurityResult::INVALID_KEY;
+    }
+    // Reject a degenerate all-zero shared secret (peer sent a low-order point).
+    if (sodium_is_zero(shared_secret.data(), shared_secret.size())) {
+        secure_zero(shared_secret.data(), shared_secret.size());
         return SecurityResult::INVALID_KEY;
     }
 
-    // Derive session key from shared secret and both public keys
+    // Recompute our ephemeral public from the secret so the transcript can bind
+    // both ephemeral public keys without the caller having to pass it back in.
+    std::array<uint8_t, 32> own_eph_public;
+    if (crypto_scalarmult_base(own_eph_public.data(), own_eph_secret.data()) != 0) {
+        secure_zero(shared_secret.data(), shared_secret.size());
+        return SecurityResult::INVALID_KEY;
+    }
+
     crypto_generichash_state state;
     crypto_generichash_init(&state, nullptr, 0, SESSION_KEY_SIZE);
     crypto_generichash_update(&state, shared_secret.data(), shared_secret.size());
-    crypto_generichash_update(&state, (const uint8_t*)HKDF_CONTEXT, sizeof(HKDF_CONTEXT) - 1);
+    crypto_generichash_update(&state, (const uint8_t*)EPH_CONTEXT, sizeof(EPH_CONTEXT) - 1);
 
-    // Order public keys consistently (smaller first) so both parties derive same key
-    if (memcmp(public_key_.data(), peer_public_key.data(), PUBLIC_KEY_SIZE) < 0) {
-        crypto_generichash_update(&state, public_key_.data(), PUBLIC_KEY_SIZE);
-        crypto_generichash_update(&state, peer_public_key.data(), PUBLIC_KEY_SIZE);
+    // Order the ephemeral public keys consistently (smaller first) so initiator
+    // and responder derive the same key without exchanging role information.
+    if (memcmp(own_eph_public.data(), peer_eph_public.data(), 32) < 0) {
+        crypto_generichash_update(&state, own_eph_public.data(), 32);
+        crypto_generichash_update(&state, peer_eph_public.data(), 32);
     } else {
-        crypto_generichash_update(&state, peer_public_key.data(), PUBLIC_KEY_SIZE);
-        crypto_generichash_update(&state, public_key_.data(), PUBLIC_KEY_SIZE);
+        crypto_generichash_update(&state, peer_eph_public.data(), 32);
+        crypto_generichash_update(&state, own_eph_public.data(), 32);
     }
+
+    // Bind the session key to the shared long-term identity (group membership).
+    crypto_generichash_update(&state, public_key_.data(), PUBLIC_KEY_SIZE);
 
     crypto_generichash_final(&state, session_key.data(), SESSION_KEY_SIZE);
 
-    // Zero shared secret
+    // Zero all working material: shared_secret and the hash state hold (or are
+    // derived from) the shared secret; own_eph_public is public but cleared too.
     secure_zero(shared_secret.data(), shared_secret.size());
-    secure_zero(peer_x25519.data(), peer_x25519.size());
+    secure_zero(own_eph_public.data(), own_eph_public.size());
+    sodium_memzero(&state, sizeof(state));
 
     return SecurityResult::SUCCESS;
 }
