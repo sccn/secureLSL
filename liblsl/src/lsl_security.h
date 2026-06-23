@@ -19,10 +19,7 @@ namespace lsl {
 namespace security {
 
 // Internal constants
-constexpr size_t HKDF_CONTEXT_SIZE = 8;
-constexpr char HKDF_CONTEXT[] = "lsl-sess";
-// Domain-separation context for the ephemeral-exchange session key, kept
-// distinct from HKDF_CONTEXT so the two derivations can never collide.
+// Domain-separation context for the ephemeral-exchange session key.
 constexpr char EPH_CONTEXT[] = "lsl-esk1";
 constexpr uint64_t SESSION_KEY_SUBKEY_ID = 1;
 
