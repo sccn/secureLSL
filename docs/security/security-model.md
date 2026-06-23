@@ -78,13 +78,14 @@ Secure LSL does NOT protect against:
 - Sliding window tolerates minor reordering
 - In testing, all replay attempts were rejected
 
-### Session Key Isolation
+### Session Key Isolation and Forward Secrecy
 
-**Guarantee**: Each connection uses a unique session key.
+**Guarantee**: Each connection uses a unique session key, and past sessions stay protected even if the long-term key is later compromised.
 
-- Session keys derived per connection with connection-specific context
-- Automatic periodic key rotation
-- Session keys exist only in memory during connection lifetime
+- Each connection performs a fresh ephemeral X25519 exchange (signed with the shared device key) to derive its session key
+- The ephemeral secret keys are destroyed once the session key is derived, providing forward secrecy
+- Automatic periodic key rotation, with a fresh ephemeral exchange each epoch
+- Session keys exist only in memory during the connection lifetime
 
 ---
 

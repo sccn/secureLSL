@@ -112,12 +112,12 @@ Your device's key is long-lived (you generate it once). But what if it's ever co
 
 Secure LSL protects against this with **session keys**:
 
-1. When two devices connect, they perform a **key exchange** to create a shared secret
-2. This secret is used to derive a **session key** that encrypts all data
-3. Session keys are **rotated periodically**
-4. Session keys are never stored; they exist only in memory
+1. When two devices connect, each generates a **fresh ephemeral key pair** for that connection only, signs its ephemeral public key with the shared device key, and exchanges them
+2. The ephemeral key exchange produces a shared secret used to derive a **session key** that encrypts all data
+3. Session keys are **rotated periodically** (a new ephemeral exchange each epoch)
+4. The ephemeral secret keys are discarded as soon as the session key is derived; session keys are never stored and exist only in memory
 
-This provides **forward secrecy**: even if an attacker eventually obtains your device's private key, they cannot decrypt recordings from past sessions that used different session keys.
+This provides **forward secrecy**: even if an attacker eventually obtains your device's long-term private key, they cannot decrypt recordings from past sessions, because each session's key depended on ephemeral secrets that no longer exist.
 
 ---
 
