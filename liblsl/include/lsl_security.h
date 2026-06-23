@@ -11,7 +11,7 @@
  *
  * Security Model:
  * - Ed25519 for device identity and signatures
- * - X25519 + HKDF for session key derivation
+ * - X25519 + BLAKE2b for session key derivation
  * - ChaCha20-Poly1305 for authenticated encryption
  * - Unified security: all-secure or all-insecure network
  *
