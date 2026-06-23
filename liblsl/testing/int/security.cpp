@@ -45,6 +45,22 @@
 
 using namespace lsl::security;
 
+// Portable environment set/unset (MSVC lacks the POSIX setenv/unsetenv).
+static void test_setenv(const char* key, const char* value) {
+#ifdef _WIN32
+    _putenv_s(key, value);
+#else
+    setenv(key, value, 1);
+#endif
+}
+static void test_unsetenv(const char* key) {
+#ifdef _WIN32
+    _putenv_s(key, "");
+#else
+    unsetenv(key);
+#endif
+}
+
 // Helper functions for test file/directory operations
 static void test_mkdir_p(const std::string& path) {
 #ifdef _WIN32
@@ -336,7 +352,7 @@ TEST_CASE("Ephemeral session key exchange", "[security][keyexchange][ephemeral]"
     std::string config_path = test_dir + "/lsl_api.cfg";
     test_mkdir_p(test_dir);
     REQUIRE(sec.generate_and_save_keypair(config_path, true, "") == SecurityResult::SUCCESS);
-    setenv("LSLAPICFG", config_path.c_str(), 1);
+    test_setenv("LSLAPICFG", config_path.c_str());
     REQUIRE(sec.load_credentials() == SecurityResult::SUCCESS);
 
     // One authenticated ephemeral exchange between an initiator and a responder
@@ -410,7 +426,7 @@ TEST_CASE("Ephemeral session key exchange", "[security][keyexchange][ephemeral]"
             SecurityResult::SUCCESS);
     }
 
-    unsetenv("LSLAPICFG");
+    test_unsetenv("LSLAPICFG");
     test_rm_rf(test_dir);
     // This test loaded credentials into the process-global singleton, enabling
     // security; reset it so later non-security tests see a clean state.
