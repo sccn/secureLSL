@@ -202,11 +202,36 @@ void data_receiver::data_thread() {
 					// Send security headers if security is enabled locally
 					auto& sec = security::LSLSecurity::instance();
 					bool local_security_enabled = sec.is_enabled();
+					// Per-session ephemeral keypair; the secret is held until the
+					// server's response arrives so the session key can be derived,
+					// then zeroed. Provides unique per-session keys and forward secrecy.
+					std::array<uint8_t, 32> client_eph_pub{}, client_eph_sec{};
+					// Zero the ephemeral secret on every exit from this scope,
+					// including exceptions thrown anywhere in the remainder of the
+					// handshake, so it never survives stack unwinding.
+					struct EphSecZeroizer {
+						std::array<uint8_t, 32>& s;
+						~EphSecZeroizer() { security::secure_zero(s.data(), s.size()); }
+					} client_eph_sec_zeroizer{client_eph_sec};
 					server_stream << "Security-Enabled: " << (local_security_enabled ? "true" : "false") << "\r\n";
 					if (local_security_enabled) {
 						const auto& pk = sec.get_public_key();
 						server_stream << "Security-Public-Key: "
 							<< security::base64_encode(pk.data(), pk.size()) << "\r\n";
+						// Generate our ephemeral key and sign it with the shared key so
+						// the outlet can verify we hold the private key, not just the public one.
+						std::array<uint8_t, security::SIGNATURE_SIZE> client_eph_sig{};
+						if (sec.generate_ephemeral_keypair(client_eph_pub, client_eph_sec) !=
+								security::SecurityResult::SUCCESS ||
+							sec.sign(client_eph_pub.data(), client_eph_pub.size(), client_eph_sig) !=
+								security::SecurityResult::SUCCESS) {
+							throw std::runtime_error(
+								"Failed to generate ephemeral key for secure handshake.");
+						}
+						server_stream << "Security-Ephemeral-Key: "
+							<< security::base64_encode(client_eph_pub.data(), client_eph_pub.size()) << "\r\n";
+						server_stream << "Security-Ephemeral-Sig: "
+							<< security::base64_encode(client_eph_sig.data(), client_eph_sig.size()) << "\r\n";
 					}
 #endif
 					server_stream << "\r\n" << std::flush;
@@ -237,6 +262,8 @@ void data_receiver::data_thread() {
 #ifdef LSL_SECURITY_ENABLED
 					bool server_security_enabled = false;
 					std::string server_security_public_key;
+					std::string server_ephemeral_key;
+					std::string server_ephemeral_sig;
 #endif
 					while (server_stream.getline(buf, sizeof(buf)) && (buf[0] != '\r')) {
 						std::string hdrline(buf);
@@ -280,6 +307,10 @@ void data_receiver::data_thread() {
 								server_security_enabled = lsl::from_string<bool>(rest);
 							if (type == "security-public-key")
 								server_security_public_key = trim(original_hdrline.substr(colon + 1));
+							if (type == "security-ephemeral-key")
+								server_ephemeral_key = trim(original_hdrline.substr(colon + 1));
+							if (type == "security-ephemeral-sig")
+								server_ephemeral_sig = trim(original_hdrline.substr(colon + 1));
 #endif
 						}
 					}
@@ -328,18 +359,39 @@ void data_receiver::data_thread() {
 							throw std::runtime_error("Public key mismatch - outlet not authorized");
 						}
 
-						// Create session state and derive session key
+						// The outlet must present an ephemeral public key and a signature
+						// over it produced with the shared long-term key (proving it holds
+						// the private key, and supplying the per-session randomness).
+						std::vector<uint8_t> server_eph_pub_v, server_eph_sig_v;
+						if (server_ephemeral_key.empty() || server_ephemeral_sig.empty() ||
+							!security::base64_decode(server_ephemeral_key, server_eph_pub_v) ||
+							!security::base64_decode(server_ephemeral_sig, server_eph_sig_v) ||
+							server_eph_pub_v.size() != 32 ||
+							server_eph_sig_v.size() != security::SIGNATURE_SIZE) {
+							security::secure_zero(client_eph_sec.data(), client_eph_sec.size());
+							throw std::runtime_error("Outlet did not supply a valid ephemeral key.");
+						}
+
+						std::array<uint8_t, security::SIGNATURE_SIZE> server_sig_arr;
+						std::copy(server_eph_sig_v.begin(), server_eph_sig_v.end(), server_sig_arr.begin());
+						if (sec.verify(server_eph_pub_v.data(), server_eph_pub_v.size(),
+								server_sig_arr, our_pk) != security::SecurityResult::SUCCESS) {
+							security::secure_zero(client_eph_sec.data(), client_eph_sec.size());
+							throw std::runtime_error("Outlet ephemeral key signature invalid.");
+						}
+
+						// Create session state and derive the per-session key from the
+						// ephemeral Diffie-Hellman exchange (unique per session, PFS).
 						session_state_ = std::make_unique<security::SessionState>();
 						std::copy(decoded_key.begin(), decoded_key.end(),
 							session_state_->peer_public_key.begin());
+						session_state_->is_initiator = true;  // client initiates
 
-						// Client is the initiator
-						session_state_->is_initiator = true;
-
-						auto result = sec.derive_session_key(
-							session_state_->peer_public_key,
-							session_state_->session_key,
-							session_state_->is_initiator);
+						std::array<uint8_t, 32> server_eph_pub;
+						std::copy(server_eph_pub_v.begin(), server_eph_pub_v.end(), server_eph_pub.begin());
+						auto result = sec.derive_session_key_ephemeral(
+							client_eph_sec, server_eph_pub, session_state_->session_key);
+						security::secure_zero(client_eph_sec.data(), client_eph_sec.size());
 
 						if (result != security::SecurityResult::SUCCESS) {
 							throw std::runtime_error(

@@ -430,6 +430,11 @@ void client_session::handle_read_feedparams(
 			// Security negotiation variables
 			bool client_security_enabled = false;
 			std::string client_security_public_key;
+			std::string client_ephemeral_key;
+			std::string client_ephemeral_sig;
+			// Our ephemeral public key and its signature, sent back in the response.
+			std::string server_ephemeral_key_b64;
+			std::string server_ephemeral_sig_b64;
 #endif
 
 			// read feed parameters
@@ -465,6 +470,10 @@ void client_session::handle_read_feedparams(
 						client_security_enabled = from_string<bool>(rest);
 					if (type == "security-public-key")
 						client_security_public_key = trim(original_hdrline.substr(colon + 1));
+					if (type == "security-ephemeral-key")
+						client_ephemeral_key = trim(original_hdrline.substr(colon + 1));
+					if (type == "security-ephemeral-sig")
+						client_ephemeral_sig = trim(original_hdrline.substr(colon + 1));
 #endif
 				} else {
 					DLOG_F(WARNING, "%p Request line '%s' contained no key-value pair", this,
@@ -567,18 +576,52 @@ void client_session::handle_read_feedparams(
 					return;
 				}
 
-				// Create session state and derive session key
+				// The client must present an ephemeral public key and a signature
+				// over it produced with the shared long-term key. This both
+				// supplies the per-session randomness and proves the client holds
+				// the private key (not merely the public key).
+				std::vector<uint8_t> client_eph_pub, client_eph_sig;
+				if (client_ephemeral_key.empty() || client_ephemeral_sig.empty() ||
+					!security::base64_decode(client_ephemeral_key, client_eph_pub) ||
+					!security::base64_decode(client_ephemeral_sig, client_eph_sig) ||
+					client_eph_pub.size() != 32 ||
+					client_eph_sig.size() != security::SIGNATURE_SIZE) {
+					send_status_message("LSL/" + std::to_string(cfg_proto_version) +
+						" 400 Security-Ephemeral-Key/Sig header required");
+					LOG_F(WARNING, "%p Client did not supply a valid ephemeral key", this);
+					return;
+				}
+
+				std::array<uint8_t, security::SIGNATURE_SIZE> client_sig_arr;
+				std::copy(client_eph_sig.begin(), client_eph_sig.end(), client_sig_arr.begin());
+				if (sec.verify(client_eph_pub.data(), client_eph_pub.size(), client_sig_arr,
+						our_pk) != security::SecurityResult::SUCCESS) {
+					send_status_message("LSL/" + std::to_string(cfg_proto_version) +
+						" 403 Ephemeral key signature invalid");
+					LOG_F(WARNING, "%p Client ephemeral key signature failed verification", this);
+					return;
+				}
+
+				// Create session state
 				session_state_ = std::make_unique<security::SessionState>();
 				std::copy(decoded_key.begin(), decoded_key.end(),
 					session_state_->peer_public_key.begin());
+				session_state_->is_initiator = false;  // server: client connects to us
 
-				// Server is never the initiator (client connects to server)
-				session_state_->is_initiator = false;
+				// Generate our ephemeral keypair, sign it, and derive the session key
+				// from the ephemeral Diffie-Hellman exchange (unique per session, PFS).
+				std::array<uint8_t, 32> server_eph_pub, server_eph_sec;
+				std::array<uint8_t, security::SIGNATURE_SIZE> server_eph_sig;
+				std::array<uint8_t, 32> peer_eph_pub;
+				std::copy(client_eph_pub.begin(), client_eph_pub.end(), peer_eph_pub.begin());
 
-				auto result = sec.derive_session_key(
-					session_state_->peer_public_key,
-					session_state_->session_key,
-					session_state_->is_initiator);
+				auto result = sec.generate_ephemeral_keypair(server_eph_pub, server_eph_sec);
+				if (result == security::SecurityResult::SUCCESS)
+					result = sec.sign(server_eph_pub.data(), server_eph_pub.size(), server_eph_sig);
+				if (result == security::SecurityResult::SUCCESS)
+					result = sec.derive_session_key_ephemeral(
+						server_eph_sec, peer_eph_pub, session_state_->session_key);
+				security::secure_zero(server_eph_sec.data(), server_eph_sec.size());
 
 				if (result != security::SecurityResult::SUCCESS) {
 					send_status_message("LSL/" + std::to_string(cfg_proto_version) +
@@ -589,6 +632,11 @@ void client_session::handle_read_feedparams(
 					session_state_.reset();
 					return;
 				}
+
+				server_ephemeral_key_b64 =
+					security::base64_encode(server_eph_pub.data(), server_eph_pub.size());
+				server_ephemeral_sig_b64 =
+					security::base64_encode(server_eph_sig.data(), server_eph_sig.size());
 
 				session_state_->key_established = std::chrono::steady_clock::now();
 				session_state_->authenticated = true;
@@ -615,6 +663,12 @@ void client_session::handle_read_feedparams(
 				const auto& pk = sec.get_public_key();
 				response_stream << "Security-Public-Key: "
 					<< security::base64_encode(pk.data(), pk.size()) << "\r\n";
+				if (security_enabled_) {
+					response_stream << "Security-Ephemeral-Key: "
+						<< server_ephemeral_key_b64 << "\r\n";
+					response_stream << "Security-Ephemeral-Sig: "
+						<< server_ephemeral_sig_b64 << "\r\n";
+				}
 			}
 #endif
 			response_stream << "\r\n" << std::flush;

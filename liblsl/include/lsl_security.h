@@ -178,6 +178,17 @@ public:
     SecurityResult load_credentials();
 
     /**
+     * @brief Clear loaded credentials and disable security
+     *
+     * Returns the singleton to the initialized-but-unconfigured state (security
+     * off, no credentials, key material zeroed); the libsodium initialization is
+     * left intact. Primarily for test isolation, since this is a process-global
+     * singleton: a test that loads credentials must reset afterwards so it does
+     * not leak an enabled-security state into subsequent tests.
+     */
+    void reset();
+
+    /**
      * @brief Check if private key is encrypted and locked
      * @return true if key is encrypted and requires unlock()
      */
@@ -291,19 +302,41 @@ public:
     // === Session Key Derivation ===
 
     /**
-     * @brief Derive a session key from peer's public key
-     * @param peer_public_key Peer's Ed25519 public key
+     * @brief Generate a fresh ephemeral X25519 keypair for one session
+     * @param[out] eph_public 32-byte ephemeral X25519 public key
+     * @param[out] eph_secret 32-byte ephemeral X25519 secret key
+     * @return SUCCESS if generated
+     *
+     * A new keypair is generated for every connection. The caller must
+     * secure_zero() the secret once the session key has been derived. This is
+     * what provides forward secrecy: once the ephemeral secret is discarded, a
+     * later compromise of the long-term keypair cannot reconstruct past session
+     * keys.
+     */
+    SecurityResult generate_ephemeral_keypair(
+        std::array<uint8_t, 32>& eph_public,
+        std::array<uint8_t, 32>& eph_secret);
+
+    /**
+     * @brief Derive a per-session key from an authenticated ephemeral X25519 exchange
+     * @param own_eph_secret Our ephemeral X25519 secret key
+     * @param peer_eph_public Peer's ephemeral X25519 public key
      * @param[out] session_key Derived 32-byte session key
-     * @param is_initiator true if we initiated the connection
      * @return SUCCESS if key derived
      *
-     * Uses X25519 key agreement with HKDF to derive a symmetric session key.
-     * The is_initiator flag ensures both parties derive the same key.
+     * session_key = BLAKE2b(X25519(own_eph_secret, peer_eph_public) ||
+     * EPH_CONTEXT || sort(own_eph_public, peer_eph_public) || static_public_key).
+     * Both ends sort the two ephemeral public keys, so initiator and responder
+     * derive the same key without exchanging role information. The caller MUST
+     * verify the peer's ephemeral-key signature with verify() before calling
+     * this, so that only a holder of the shared long-term key can take part.
+     * The ephemeral exchange makes the session key unique per connection and
+     * provides forward secrecy.
      */
-    SecurityResult derive_session_key(
-        const std::array<uint8_t, PUBLIC_KEY_SIZE>& peer_public_key,
-        std::array<uint8_t, SESSION_KEY_SIZE>& session_key,
-        bool is_initiator);
+    SecurityResult derive_session_key_ephemeral(
+        const std::array<uint8_t, 32>& own_eph_secret,
+        const std::array<uint8_t, 32>& peer_eph_public,
+        std::array<uint8_t, SESSION_KEY_SIZE>& session_key);
 
     // === Encryption/Decryption ===
 
