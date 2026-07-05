@@ -4,6 +4,19 @@ Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
 
 SECURE LSL LICENSE
 
+SUMMARY (informative; the full terms below are controlling)
+
+Secure LSL is free for non-commercial Academic Non-Profit Use. Researchers,
+students, and non-profit institutions may freely deploy and use Secure LSL to
+secure their own Lab Streaming Layer setups and data, for example, encrypting
+EEG or other biosignal streams in a research study, and may also reproduce,
+benchmark, verify, extend, and modify it, under the terms below. All other use
+is NOT permitted under this license. Any commercial, industry, for-profit, or
+other non-academic use, including evaluation, modification, or deployment by
+such entities, requires a separate written license from the University of
+California San Diego, Office of Innovation and Commercialization
+(innovation@ucsd.edu).
+
 PATENT NOTICE
 
 The algorithms, protocols, and methods embodied in this Software are the
@@ -67,9 +80,20 @@ and copy the Software solely for Academic Non-Profit Use, provided that:
 
 MODIFICATIONS
 
-Modification of the Software is not permitted under any license grant, whether
-for Academic Non-Profit Use or otherwise. The sole mechanism for contributing
-changes to the Software is by submitting a pull request to the official
+Except as expressly permitted below for Academic Non-Profit Use, modification
+of the Software is not permitted under any license grant, whether for Academic
+Non-Profit Use or otherwise. A Licensee exercising Academic Non-Profit Use may
+modify the Software solely to reproduce, verify, or extend the results described
+in associated academic publications, provided that any such modified version is
+used only for Academic Non-Profit Use, is not redistributed beyond what the
+Academic Non-Profit Use grant permits, and is not used for Commercial Use or to
+develop competing products or services. Any permitted modification remains
+subject to this license in its entirety and does not relicense the Software or
+create any independent or new license, nor does modifying the Software release,
+waive, or diminish any rights of The Regents of the University of California,
+including ownership, patent rights, and the requirement to obtain a separate
+written license for any Commercial Use. The sole mechanism for contributing
+changes back to the Software is by submitting a pull request to the official
 Repository, or its successor location as designated by the copyright holder.
 Upon review and acceptance by the copyright holder, merged contributions
 become part of the Software and are governed by this same license. By
@@ -89,9 +113,15 @@ whether the use qualifies as Academic Non-Profit Use or otherwise:
    notices.
 3. Claiming authorship or ownership of any part of the Software.
 4. Extracting, separating, or isolating any component of the Software for
-   independent use outside the context of this Software.
+   independent use outside the context of this Software (except as reasonably
+   necessary for Academic Non-Profit Use to reproduce or verify published
+   results).
 5. Using the Software for benchmarking, comparison, or competitive analysis
-   without prior written permission of the copyright holder.
+   without prior written permission of the copyright holder, except that
+   benchmarking, comparison, and evaluation performed under Academic Non-Profit
+   Use, including reproduction of results published by the copyright holder, are
+   permitted; commercial or competitive benchmarking continues to require prior
+   written permission.
 6. Hosting, storing, or making the Software accessible to unauthorized parties.
 
 ADDITIONAL RESTRICTIONS ON COMMERCIAL USE
@@ -149,7 +179,7 @@ This license covers the Software in its entirety, including but not limited to:
    - Ed25519 device authentication system
    - X25519 key exchange implementation
    - ChaCha20-Poly1305 authenticated encryption integration
-   - HKDF session key derivation
+   - BLAKE2b session key derivation
    - Argon2id passphrase-based key protection
    - Device-bound session token system
    - Nonce tracking and replay prevention

@@ -7,6 +7,9 @@
 
 Secure LSL is a drop-in replacement for [liblsl](https://github.com/sccn/liblsl) that adds transparent end-to-end encryption. Your existing LSL applications work unchanged; security is handled entirely within the library.
 
+> [!IMPORTANT]
+> Secure LSL is **free for non-commercial academic and non-profit research use**. Researchers and non-profit institutions may freely deploy it to secure their own Lab Streaming Layer setups and data (for example, encrypting EEG streams in a study), and may also reproduce, benchmark, verify, and modify it. Any other use, including commercial, industry, or for-profit use such as evaluation, modification, or deployment, requires a **separate license from UC San Diego** (Office of Innovation and Commercialization, innovation@ucsd.edu), which helps fund the continued maintenance and development of the platform. See [LICENSE](LICENSE).
+
 ## Features
 
 - **End-to-end encryption**: ChaCha20-Poly1305 authenticated encryption
