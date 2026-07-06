@@ -1,0 +1,28 @@
+{
+  "upload_type": "software",
+  "title": "Secure LSL",
+  "version": "1.16.1-secure.1.1.0",
+  "description": "Secure LSL is a drop-in replacement for liblsl that adds a transparent, unified encryption layer to the Lab Streaming Layer. It provides Ed25519 device authorization, per-session X25519 key exchange with a BLAKE2b key-derivation function, and ChaCha20-Poly1305 authenticated encryption, so existing LSL applications gain end-to-end security without code changes. A clean-room liblsl-ESP32 reimplementation extends the same encryption to microcontroller-class biosensors.",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Shirazi, Seyed Yahya",
+      "orcid": "0000-0001-5557-259X",
+      "affiliation": "Swartz Center for Computational Neuroscience, University of California San Diego"
+    },
+    {
+      "name": "Makeig, Scott",
+      "orcid": "0000-0002-9048-8438",
+      "affiliation": "Swartz Center for Computational Neuroscience, University of California San Diego"
+    }
+  ],
+  "keywords": [
+    "lab-streaming-layer",
+    "biosignal-security",
+    "authenticated-encryption",
+    "neurotechnology",
+    "EEG",
+    "real-time-data-streaming"
+  ],
+  "notes": "Source-available under the Secure LSL License (see LICENSE): free for non-commercial academic and non-profit research use, including reproduction, benchmarking, and modification to verify or extend results; commercial and competitive use require a separate license from UC San Diego. Patent pending."
+}
