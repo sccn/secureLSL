@@ -6,7 +6,8 @@ Secure LSL integrates security at the core library level, making it transparent 
 
 ## System Architecture
 
-The security layer sits between the standard LSL API and the original LSL core. Applications call the same functions as before; encryption and authentication happen automatically inside the library.
+The security layer sits between the standard LSL API and the original LSL core.
+Applications call the same functions as before; encryption and authentication happen automatically inside the library.
 
 ![Secure LSL System Architecture](../assets/system-architecture.svg)
 

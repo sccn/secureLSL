@@ -6,17 +6,24 @@ Secure LSL includes a protocol-compatible implementation for ESP32 microcontroll
 
 ## Overview
 
-**liblsl-ESP32** is a clean-room C reimplementation of the LSL wire protocol for ESP32, with full secureLSL encryption support. It is not a port of desktop liblsl; it reimplements the protocol from scratch using ESP-IDF native APIs.
+**liblsl-ESP32** is a clean-room C reimplementation of the LSL wire protocol for ESP32, with full secureLSL encryption support.
+It is not a port of desktop liblsl; it reimplements the protocol from scratch using ESP-IDF native APIs.
 
 ### Scope
 
-liblsl-ESP32 provides the **communication layer** for streaming data over WiFi using the LSL protocol. While the ESP32 includes built-in ADC peripherals, this implementation focuses on the networking and protocol stack rather than signal acquisition. For biosignal applications (EEG, EMG, ECG), the ESP32 typically serves as a wireless bridge: a dedicated ADC IC (e.g., ADS1299, ADS1294) handles acquisition with the precision, noise floor, and simultaneous sampling required for research-grade recordings, while the ESP32 handles WiFi, LSL protocol, and encryption. This separation follows established practice in wireless biosignal systems.
+liblsl-ESP32 provides the **communication layer** for streaming data over WiFi using the LSL protocol.
+While the ESP32 includes built-in ADC peripherals, this implementation focuses on the networking and protocol stack rather than signal acquisition.
+For biosignal applications (EEG, EMG, ECG), the ESP32 typically serves as a wireless bridge: a dedicated ADC IC (e.g., ADS1299, ADS1294) handles acquisition with the precision, noise floor, and simultaneous sampling required for research-grade recordings, while the ESP32 handles WiFi, LSL protocol, and encryption.
+This separation follows established practice in wireless biosignal systems.
 
-The current implementation uses 802.11 WiFi, but the protocol and encryption layers are transport-agnostic (standard BSD sockets). Developers can substitute alternative low-latency transports including Ethernet (SPI PHY), Bluetooth, or ESP-NOW, reusing the LSL protocol and secureLSL encryption modules. Note that LSL is designed for low-latency local network environments; high-latency transports are not suitable.
+The current implementation uses 802.11 WiFi, but the protocol and encryption layers are transport-agnostic (standard BSD sockets).
+Developers can substitute alternative low-latency transports including Ethernet (SPI PHY), Bluetooth, or ESP-NOW, reusing the LSL protocol and secureLSL encryption modules.
+Note that LSL is designed for low-latency local network environments; high-latency transports are not suitable.
 
 ### Why a Reimplementation?
 
-Desktop liblsl is ~50,000+ lines of C++ coupled to Boost, pugixml, and C++ features (exceptions, RTTI) that are impractical on a device with 520KB SRAM. The LSL wire protocol is simple (UDP discovery, TCP streamfeed, binary samples), making a clean C reimplementation (~4,000 lines) both smaller and more maintainable.
+Desktop liblsl is ~50,000+ lines of C++ coupled to Boost, pugixml, and C++ features (exceptions, RTTI) that are impractical on a device with 520KB SRAM.
+The LSL wire protocol is simple (UDP discovery, TCP streamfeed, binary samples), making a clean C reimplementation (~4,000 lines) both smaller and more maintainable.
 
 ### Features
 
@@ -84,7 +91,8 @@ sample, ts = inlet.pull_sample()
 
 ## Security Setup
 
-The ESP32 uses the same shared keypair model as desktop Secure LSL. All devices in a lab must share the same Ed25519 keypair.
+The ESP32 uses the same shared keypair model as desktop Secure LSL.
+All devices in a lab must share the same Ed25519 keypair.
 
 !!! warning "All devices must share the same keypair"
     The ESP32 and desktop must have identical Ed25519 keypairs. Mismatched keys result in a 403 connection rejection (unanimous security enforcement).

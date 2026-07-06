@@ -1,6 +1,7 @@
 # Quick Start Guide
 
-Get your LSL streams encrypted in under 5 minutes. No code changes required for dynamically linked applications.
+Get your LSL streams encrypted in under 5 minutes.
+No code changes required for dynamically linked applications.
 
 ---
 
@@ -126,7 +127,8 @@ LSL Security Configuration Status
 
 ## Step 3: Run Your Applications
 
-That's it! Your existing LSL applications now stream encrypted data automatically.
+That's it!
+Your existing LSL applications now stream encrypted data automatically.
 
 === "Python"
 

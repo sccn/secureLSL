@@ -1,12 +1,11 @@
 # Secure LSL Benchmark Report
 
-**Date:** December 8, 2025
-**Version:** 1.0
-**Authors:** Secure LSL Development Team
+**Date:** December 8, 2025 **Version:** 1.0 **Authors:** Secure LSL Development Team
 
 ## Executive Summary
 
-This report documents comprehensive performance benchmarks measuring the overhead of ChaCha20-Poly1305 authenticated encryption in the Secure Lab Streaming Layer (LSL) implementation. Testing was conducted across multiple platforms and network configurations to validate that security features do not significantly impact real-time streaming performance.
+This report documents comprehensive performance benchmarks measuring the overhead of ChaCha20-Poly1305 authenticated encryption in the Secure Lab Streaming Layer (LSL) implementation.
+Testing was conducted across multiple platforms and network configurations to validate that security features do not significantly impact real-time streaming performance.
 
 **Key Finding:** Encryption adds only **0.8-0.9 ms (~1%)** latency overhead, which is negligible for practical neuroscience applications.
 

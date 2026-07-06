@@ -39,14 +39,13 @@ idf.py build
 idf.py -p /dev/cu.usbserial-XXXX flash monitor
 ```
 
-Press `Ctrl+]` to exit the serial monitor. The benchmark starts 2 seconds after
-boot to allow the serial monitor to connect.
+Press `Ctrl+]` to exit the serial monitor.
+The benchmark starts 2 seconds after boot to allow the serial monitor to connect.
 
 ## Hardware Results
 
-Measured on ESP32-DevKitC v4 (ESP32-D0WD-V3 rev 3.1, dual core, 240 MHz, 2 MB external flash;
-some boards ship with 4 MB). ESP-IDF v5.5.3, libsodium 1.0.19 (ESP component 1.0.20~4),
-compiler optimization: performance mode.
+Measured on ESP32-DevKitC v4 (ESP32-D0WD-V3 rev 3.1, dual core, 240 MHz, 2 MB external flash; some boards ship with 4 MB).
+ESP-IDF v5.5.3, libsodium 1.0.19 (ESP component 1.0.20~4), compiler optimization: performance mode.
 Each operation runs 1000 iterations after a 10-iteration warmup.
 
 ### ChaCha20-Poly1305 IETF AEAD
@@ -94,8 +93,7 @@ Throughput is based on encrypt time (decrypt is similar).
 | X25519 scalar mult (DH) | 12,456 | 80 |
 | Full session key derivation | 30,059 | 33 |
 
-The full session key derivation (Ed25519 -> X25519 + DH + BLAKE2b) costs ~30 ms.
-This is a one-time cost per LSL connection setup.
+The full session key derivation (Ed25519 -> X25519 + DH + BLAKE2b) costs ~30 ms. This is a one-time cost per LSL connection setup.
 
 ### Memory
 
@@ -106,12 +104,11 @@ This is a one-time cost per LSL connection setup.
 | After all benchmarks | 296,580 |
 | Minimum observed | 280,000 |
 
-sodium_init() has zero heap cost. The 297 KB available after boot leaves ample room
-for liblsl-esp32 (~200 KB budget) plus user application code.
+sodium_init() has zero heap cost.
+The 297 KB available after boot leaves ample room for liblsl-esp32 (~200 KB budget) plus user application code.
 
-Note: the 520 KB SRAM total includes memory used by the FreeRTOS kernel, WiFi/BT
-stack reservations, and static allocations. The ~297 KB free heap is the actual
-available dynamic memory after the OS boots.
+Note: the 520 KB SRAM total includes memory used by the FreeRTOS kernel, WiFi/BT stack reservations, and static allocations.
+The ~297 KB free heap is the actual available dynamic memory after the OS boots.
 
 ### Correctness Verification
 
@@ -132,13 +129,10 @@ All correctness checks pass:
 | Free heap after boot | >= 200 KB usable | 297 KB | PASS |
 | Correctness checks | all pass | all pass | PASS |
 
-The original criterion "sodium_init leaves >= 350 KB free heap" assumed more
-SRAM is available as heap. In practice, the ESP32's 520 KB SRAM minus OS
-overhead yields ~297 KB free heap at boot, which is sufficient for our ~200 KB
-liblsl-esp32 budget.
+The original criterion "sodium_init leaves >= 350 KB free heap" assumed more SRAM is available as heap.
+In practice, the ESP32's 520 KB SRAM minus OS overhead yields ~297 KB free heap at boot, which is sufficient for our ~200 KB liblsl-esp32 budget.
 
 ## Output
 
 Results are printed via UART serial (115200 baud) as formatted log lines.
-Each operation reports: mean, min, max, stddev (in microseconds), ops/sec,
-and throughput (Mbps) for payload-based operations.
+Each operation reports: mean, min, max, stddev (in microseconds), ops/sec, and throughput (Mbps) for payload-based operations.

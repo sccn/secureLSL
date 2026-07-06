@@ -26,7 +26,8 @@ This guide helps existing LSL users transition to Secure LSL with minimal fricti
 
 ## App Compatibility Reference
 
-The table below lists LSL applications from the [labstreaminglayer](https://github.com/labstreaminglayer) organization and their linking strategy. Nearly all apps load liblsl dynamically and work as drop-in replacements.
+The table below lists LSL applications from the [labstreaminglayer](https://github.com/labstreaminglayer) organization and their linking strategy.
+Nearly all apps load liblsl dynamically and work as drop-in replacements.
 
 !!! note "Status Key"
     **Verified** = run end-to-end against liblsl-secure on real hardware.
@@ -154,7 +155,8 @@ The table below lists LSL applications from the [labstreaminglayer](https://gith
 
 ### Step 2: Generate and Distribute Keys (5 minutes)
 
-All devices in your lab must share the **same** keypair. Generate on one device, then distribute to all others.
+All devices in your lab must share the **same** keypair.
+Generate on one device, then distribute to all others.
 
 **On the first device (key generator):**
 
@@ -336,7 +338,8 @@ if streams:
 
 ### Stream Discovery
 
-Secure streams advertise their security status. You can see this in the stream metadata:
+Secure streams advertise their security status.
+You can see this in the stream metadata:
 
 ```python
 streams = pylsl.resolve_streams()

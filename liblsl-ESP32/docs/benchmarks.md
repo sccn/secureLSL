@@ -29,11 +29,15 @@ Performance measurements for liblsl-ESP32, including encryption overhead analysi
 
 ### What We Don't Measure
 
-**Absolute cross-machine latency** is not measured because ESP32 uses a monotonic clock (`lsl_esp32_local_clock()`, seconds since boot) while the desktop uses wall clock (`time.time()`). Without NTP synchronization or LSL time correction, absolute latency would be meaningless. WiFi jitter (~2ms) dominates any sub-millisecond crypto overhead.
+**Absolute cross-machine latency** is not measured because ESP32 uses a monotonic clock (`lsl_esp32_local_clock()`, seconds since boot) while the desktop uses wall clock (`time.time()`).
+Without NTP synchronization or LSL time correction, absolute latency would be meaningless.
+WiFi jitter (~2ms) dominates any sub-millisecond crypto overhead.
 
 ### Push Timing Interpretation
 
-`push_sample_f()` writes to a lock-free ring buffer. The actual encryption happens asynchronously in the TCP feed task on core 1. Therefore, push timing measures the ring buffer write cost, not encryption. This is the correct metric for application developers, as it represents the time their code spends in the LSL push call.
+`push_sample_f()` writes to a lock-free ring buffer.
+The actual encryption happens asynchronously in the TCP feed task on core 1. Therefore, push timing measures the ring buffer write cost, not encryption.
+This is the correct metric for application developers, as it represents the time their code spends in the LSL push call.
 
 ## Results
 
@@ -46,7 +50,9 @@ Performance measurements for liblsl-ESP32, including encryption overhead analysi
 | Push p95 | 67 us | 57 us | No overhead |
 | Heap free | 113 KB | 111 KB | -2 KB |
 
-**Finding:** Encryption overhead is invisible to the application push path. ChaCha20-Poly1305 runs asynchronously on a separate core. The 2 KB heap difference is the security session state.
+**Finding:** Encryption overhead is invisible to the application push path.
+ChaCha20-Poly1305 runs asynchronously on a separate core.
+The 2 KB heap difference is the security session state.
 
 ### 2. Sampling Rate Sweep (8ch float32, 30s)
 
@@ -56,7 +62,10 @@ Performance measurements for liblsl-ESP32, including encryption overhead analysi
 | 500 Hz | 65.1 | 70.3 | 255 | 310 | 0% / 0% |
 | 1000 Hz | 68.1 | 48.3 | 319 | 97 | 0.02% / 0% |
 
-**Finding:** ESP32 sustains up to 1000 Hz with near-zero packet loss. The p95 increases at higher rates due to WiFi backpressure spikes, but the ring buffer absorbs them. The maximum reliable rate is 1000 Hz (limited by FreeRTOS 1ms tick resolution). Loss at 1000 Hz is within WiFi variance and not attributable to encryption.
+**Finding:** ESP32 sustains up to 1000 Hz with near-zero packet loss.
+The p95 increases at higher rates due to WiFi backpressure spikes, but the ring buffer absorbs them.
+The maximum reliable rate is 1000 Hz (limited by FreeRTOS 1ms tick resolution).
+Loss at 1000 Hz is within WiFi variance and not attributable to encryption.
 
 ### 3. Channel Count Sweep (250 Hz, 30s)
 
@@ -70,7 +79,9 @@ Performance measurements for liblsl-ESP32, including encryption overhead analysi
 
 All configurations: 7,500/7,500 samples (0% loss).
 
-**Finding:** Push timing is dominated by ring buffer overhead, not payload size. Even 64-channel encrypted streaming achieves sub-100us push with zero loss at 250 Hz. Variability across channel counts reflects measurement noise and WiFi scheduling effects; the key takeaway is that all configurations achieve sub-100us push regardless of channel count.
+**Finding:** Push timing is dominated by ring buffer overhead, not payload size.
+Even 64-channel encrypted streaming achieves sub-100us push with zero loss at 250 Hz.
+Variability across channel counts reflects measurement noise and WiFi scheduling effects; the key takeaway is that all configurations achieve sub-100us push regardless of channel count.
 
 ### 4. Resource Usage
 
@@ -91,7 +102,9 @@ SRAM budget: ~200 KB used by liblsl-esp32, 300 KB+ free for user application cod
 | Raspberry Pi 5 (Ethernet) | <1% latency increase | 1000 Hz | 0% |
 | **ESP32 (WiFi)** | **0% (async on separate core)** | **1000 Hz** | **0.02%** |
 
-Mac Mini and Pi 5 results are from the [desktop secureLSL benchmark suite](https://github.com/sccn/secureLSL). The ESP32 achieves zero measurable encryption overhead because its dual-core architecture allows encryption to run on a separate core from the application. WiFi jitter (~2ms) dominates end-to-end timing, making any sub-millisecond crypto overhead invisible.
+Mac Mini and Pi 5 results are from the [desktop secureLSL benchmark suite](https://github.com/sccn/secureLSL).
+The ESP32 achieves zero measurable encryption overhead because its dual-core architecture allows encryption to run on a separate core from the application.
+WiFi jitter (~2ms) dominates end-to-end timing, making any sub-millisecond crypto overhead invisible.
 
 ## Running Benchmarks
 

@@ -6,7 +6,8 @@ Using SigVisualizer with Secure LSL streams for real-time visualization.
 
 ## Overview
 
-SigVisualizer is a Python/PyQt5 application for real-time visualization of LSL streams. When used with secure liblsl, it automatically:
+SigVisualizer is a Python/PyQt5 application for real-time visualization of LSL streams.
+When used with secure liblsl, it automatically:
 
 - Displays encryption status for discovered streams (lock icon 🔒)
 - Decrypts incoming data transparently
@@ -202,7 +203,8 @@ After configuring credentials, click "Update" again to retry stream discovery.
 
 ### High Latency
 
-Normal security overhead is <1ms. If you see higher latency:
+Normal security overhead is <1ms.
+If you see higher latency:
 
 1. Check network conditions
 2. Verify CPU load on both devices

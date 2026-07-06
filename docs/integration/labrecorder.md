@@ -6,7 +6,8 @@ How to use LabRecorder with Secure LSL streams.
 
 ## Overview
 
-LabRecorder is the standard application for recording LSL streams to XDF files. The secure version of LabRecorder:
+LabRecorder is the standard application for recording LSL streams to XDF files.
+The secure version of LabRecorder:
 
 - Shows encryption status for each stream
 - Only connects to streams matching your security configuration
@@ -18,7 +19,8 @@ LabRecorder is the standard application for recording LSL streams to XDF files. 
 
 ### Use Secure LabRecorder (Drop-In Approach)
 
-LabRecorder links liblsl dynamically, so you do not need to rebuild it. Instead, replace the liblsl library it loads with `liblsl-secure`:
+LabRecorder links liblsl dynamically, so you do not need to rebuild it.
+Instead, replace the liblsl library it loads with `liblsl-secure`:
 
 === "macOS (app bundle)"
 
@@ -72,7 +74,8 @@ The lock icon (🔒) indicates the stream is encrypted.
 2. Select the streams you want to record
 3. Click "Start Recording"
 
-Recording works exactly as before. The security layer is transparent:
+Recording works exactly as before.
+The security layer is transparent:
 
 - Data arrives encrypted over the network
 - LabRecorder decrypts it automatically
@@ -220,7 +223,8 @@ Mixed environments will cause connection failures.
 
 ### Performance Issues
 
-Security adds minimal overhead (<5% CPU, <1ms latency). If you see performance issues:
+Security adds minimal overhead (<5% CPU, <1ms latency).
+If you see performance issues:
 
 1. Verify you're using release builds, not debug
 2. Check that libsodium was built with optimizations

@@ -2,7 +2,8 @@
 
 ## Overview
 
-liblsl-ESP32 is a clean-room C reimplementation of the LSL wire protocol for ESP32 microcontrollers. It is not a port of desktop liblsl; it reimplements the protocol from scratch using ESP-IDF native APIs.
+liblsl-ESP32 is a clean-room C reimplementation of the LSL wire protocol for ESP32 microcontrollers.
+It is not a port of desktop liblsl; it reimplements the protocol from scratch using ESP-IDF native APIs.
 
 ## Why Not Port Desktop liblsl?
 
@@ -17,7 +18,8 @@ Desktop liblsl is ~50,000+ lines of C++ with deep dependencies:
 | C++ exceptions/RTTI | Error handling | Available but adds ~100KB binary overhead |
 | STL containers | Data structures | Hidden heap allocation, fragmentation risk |
 
-The LSL wire protocol is simple: UDP multicast discovery, TCP streamfeed with test patterns, binary sample format. Reimplementing it in ~4000 lines of C gives us precise memory control and a smaller footprint than porting the C++ stack.
+The LSL wire protocol is simple: UDP multicast discovery, TCP streamfeed with test patterns, binary sample format.
+Reimplementing it in ~4000 lines of C gives us precise memory control and a smaller footprint than porting the C++ stack.
 
 ## Protocol Layers
 
@@ -46,7 +48,8 @@ Application (lsl_esp32.h)
 
 ## Threading Model
 
-All network tasks are pinned to core 1 (application core). Core 0 is reserved for the WiFi/protocol stack.
+All network tasks are pinned to core 1 (application core).
+Core 0 is reserved for the WiFi/protocol stack.
 
 | Task | Priority | Core | Stack | Purpose |
 |------|----------|------|-------|---------|
@@ -55,7 +58,8 @@ All network tasks are pinned to core 1 (application core). Core 0 is reserved fo
 | TCP feed (x3) | 7 | 1 | 8KB | Per-connection data streaming |
 | Inlet receiver | 7 | 1 | 6KB | Sample reception |
 
-By default, `app_main` runs on core 0. All liblsl-esp32 network tasks are pinned to core 1. This means `push_sample_f()` (called from app_main on core 0) writes to the ring buffer, while the TCP feed task (on core 1) reads, optionally encrypts, and sends over WiFi. Push and pull operations are non-blocking ring buffer writes/reads.
+By default, `app_main` runs on core 0. All liblsl-esp32 network tasks are pinned to core 1. This means `push_sample_f()` (called from app_main on core 0) writes to the ring buffer, while the TCP feed task (on core 1) reads, optionally encrypts, and sends over WiFi.
+Push and pull operations are non-blocking ring buffer writes/reads.
 
 ## Memory Architecture
 
@@ -71,7 +75,8 @@ By default, `app_main` runs on core 0. All liblsl-esp32 network tasks are pinned
 | Security config | ~100B | Keypair (outlet/inlet struct) |
 | libsodium | ~40KB | Flash + minimal RAM |
 
-All hot-path allocations are pre-allocated. No `malloc` during streaming.
+All hot-path allocations are pre-allocated.
+No `malloc` during streaming.
 
 ## Security Architecture
 

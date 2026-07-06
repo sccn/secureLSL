@@ -1,6 +1,7 @@
 # Performance Benchmarks
 
-This page documents comprehensive performance benchmarks measuring the overhead of ChaCha20-Poly1305 authenticated encryption in Secure LSL. Testing was conducted across multiple network configurations to validate that security features do not significantly impact real-time streaming performance.
+This page documents comprehensive performance benchmarks measuring the overhead of ChaCha20-Poly1305 authenticated encryption in Secure LSL.
+Testing was conducted across multiple network configurations to validate that security features do not significantly impact real-time streaming performance.
 
 **Key finding:** Encryption adds only **0.8-0.9 ms (~1%)** latency overhead, which is negligible for practical neuroscience applications.
 
@@ -238,7 +239,8 @@ The benchmark results demonstrate that ChaCha20-Poly1305 encryption adds minimal
 
 ### 4.2 Network Latency Dominates
 
-The measured end-to-end latencies (77-79 ms) are dominated by network stack processing, OS scheduling delays, and buffer management. The encryption overhead (~0.8 ms) represents only ~1% of the total latency.
+The measured end-to-end latencies (77-79 ms) are dominated by network stack processing, OS scheduling delays, and buffer management.
+The encryption overhead (~0.8 ms) represents only ~1% of the total latency.
 
 ### 4.3 Statistical Significance
 

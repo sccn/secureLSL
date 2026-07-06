@@ -127,9 +127,9 @@ uv run python serial_monitor.py --port /dev/cu.usbserial-XXXX --output ../result
 
 ### Why no absolute latency?
 ESP32 uses monotonic `lsl_esp32_local_clock()` (seconds since boot).
-Desktop uses `time.time()` (unix wall clock). Without NTP sync or LSL
-time correction (not implemented), absolute cross-machine latency
-is meaningless. We focus on relative metrics instead.
+Desktop uses `time.time()` (unix wall clock).
+Without NTP sync or LSL time correction (not implemented), absolute cross-machine latency is meaningless.
+We focus on relative metrics instead.
 
 ## Output Format
 

@@ -1,6 +1,7 @@
 # Unit Tests
 
-Secure LSL's C++ core and exported C API are covered by automated test suites built on the [Catch2](https://github.com/catchorg/Catch2) framework. These tests run as part of the CMake build and verify the cryptographic primitives, key management, session negotiation, and data integrity logic.
+Secure LSL's C++ core and exported C API are covered by automated test suites built on the [Catch2](https://github.com/catchorg/Catch2) framework.
+These tests run as part of the CMake build and verify the cryptographic primitives, key management, session negotiation, and data integrity logic.
 
 ## Test Suite Summary
 
@@ -15,7 +16,9 @@ Tests are run as part of each validation pass.
 
 ### C++ Core Test Cases (`lsl_test_internal`, 27 cases, 3059 assertions)
 
-The internal test suite (`lsl_test_internal`) tests the internal C++ implementation. It links against `lslobj` and `lslboost`, and includes `int/security.cpp`. It covers:
+The internal test suite (`lsl_test_internal`) tests the internal C++ implementation.
+It links against `lslobj` and `lslboost`, and includes `int/security.cpp`.
+It covers:
 
 - **Cryptographic primitives**: ChaCha20-Poly1305 encryption and decryption correctness, AEAD authentication tag verification, key derivation via HKDF.
 - **Key management**: Ed25519 keypair generation, base64 encoding and decoding, passphrase-based key encryption and decryption, key export and import round-trips.
@@ -25,7 +28,9 @@ The internal test suite (`lsl_test_internal`) tests the internal C++ implementat
 
 ### C API Exported Test Cases (`lsl_test_exported`, 13 cases, 1036 assertions)
 
-The exported API test suite (`lsl_test_exported`) tests the exported C API. It links against `lsl` and includes `ext/security_api.cpp`. It verifies that the public C interface behaves correctly for:
+The exported API test suite (`lsl_test_exported`) tests the exported C API.
+It links against `lsl` and includes `ext/security_api.cpp`.
+It verifies that the public C interface behaves correctly for:
 
 - `lsl_get_security_enabled()` and `lsl_local_security_enabled()` return values.
 - Secure `StreamOutlet` creation and property reporting.
@@ -82,4 +87,5 @@ Run a specific test by name:
 
 ## Continuous Integration
 
-The test suite is integrated into the CMake build so that any build with `-DLSL_SECURITY=ON -DLSL_UNITTESTS=ON` will compile and can immediately run both test executables. Tests are expected to pass on macOS, Linux (Debian/Ubuntu), and Raspberry Pi OS (Bookworm).
+The test suite is integrated into the CMake build so that any build with `-DLSL_SECURITY=ON -DLSL_UNITTESTS=ON` will compile and can immediately run both test executables.
+Tests are expected to pass on macOS, Linux (Debian/Ubuntu), and Raspberry Pi OS (Bookworm).

@@ -9,18 +9,23 @@ A clean-room C reimplementation of the [Lab Streaming Layer (LSL)](https://githu
 
 ## Scope and Intended Use
 
-liblsl-ESP32 provides the **communication layer** for streaming data over WiFi using the LSL protocol. While the ESP32 includes built-in ADC peripherals, this project focuses on the networking and protocol stack rather than signal acquisition.
+liblsl-ESP32 provides the **communication layer** for streaming data over WiFi using the LSL protocol.
+While the ESP32 includes built-in ADC peripherals, this project focuses on the networking and protocol stack rather than signal acquisition.
 
-For biosignal applications (EEG, EMG, ECG), the ESP32 typically serves as a **wireless bridge**: a dedicated ADC integrated circuit (e.g., ADS1299, ADS1294) performs analog-to-digital conversion with the precision, noise floor, and simultaneous sampling required for research-grade recordings, while the ESP32 handles WiFi networking, LSL protocol, and optional encryption. This separation of concerns follows established practice in wireless biosignal systems and allows the communication stack to be reused across different acquisition front-ends.
+For biosignal applications (EEG, EMG, ECG), the ESP32 typically serves as a **wireless bridge**: a dedicated ADC integrated circuit (e.g., ADS1299, ADS1294) performs analog-to-digital conversion with the precision, noise floor, and simultaneous sampling required for research-grade recordings, while the ESP32 handles WiFi networking, LSL protocol, and optional encryption.
+This separation of concerns follows established practice in wireless biosignal systems and allows the communication stack to be reused across different acquisition front-ends.
 
 ### Current Transport and Extensibility
 
-The current implementation uses **802.11 WiFi** as the transport layer, leveraging the ESP32's integrated WiFi radio and the lwIP TCP/IP stack. However, the protocol and encryption layers are transport-agnostic by design, operating on standard BSD sockets. Developers can replace the WiFi transport with any network interface that provides TCP/IP connectivity, including:
+The current implementation uses **802.11 WiFi** as the transport layer, leveraging the ESP32's integrated WiFi radio and the lwIP TCP/IP stack.
+However, the protocol and encryption layers are transport-agnostic by design, operating on standard BSD sockets.
+Developers can replace the WiFi transport with any network interface that provides TCP/IP connectivity, including:
 
 - **Ethernet**: via SPI-connected PHY (e.g., W5500, LAN8720), providing lower latency and deterministic timing for wired lab environments
 - **Bluetooth Classic (SPP)** or **BLE**: for short-range, low-power scenarios where WiFi infrastructure is unavailable
 - **ESP-NOW**: Espressif's peer-to-peer protocol for low-latency ESP32-to-ESP32 communication without a WiFi access point
-Note that LSL and secureLSL are designed for low-latency local network environments (lab, clinic). High-latency transports (cellular, LoRa, satellite) are not suitable for the real-time streaming guarantees the protocol assumes.
+Note that LSL and secureLSL are designed for low-latency local network environments (lab, clinic).
+High-latency transports (cellular, LoRa, satellite) are not suitable for the real-time streaming guarantees the protocol assumes.
 
 These transport extensions require replacing only the socket/network initialization layer while reusing the existing LSL protocol serialization, stream discovery (adapted per transport), and secureLSL encryption modules.
 
@@ -36,9 +41,11 @@ These transport extensions require replacing only the socket/network initializat
 
 ## Why a Reimplementation?
 
-Desktop liblsl is ~50K+ lines of C++ deeply coupled to Boost (Asio, Serialization, threading), pugixml, exceptions, and RTTI. While Espressif provides an [official Boost.Asio port](https://components.espressif.com/components/espressif/asio), desktop liblsl's dependencies extend far beyond Asio alone, and the C++ overhead (exceptions, RTTI, STL containers) is prohibitive on a device with 520KB SRAM.
+Desktop liblsl is ~50K+ lines of C++ deeply coupled to Boost (Asio, Serialization, threading), pugixml, exceptions, and RTTI.
+While Espressif provides an [official Boost.Asio port](https://components.espressif.com/components/espressif/asio), desktop liblsl's dependencies extend far beyond Asio alone, and the C++ overhead (exceptions, RTTI, STL containers) is prohibitive on a device with 520KB SRAM.
 
-The LSL wire protocol is straightforward (UDP discovery, TCP streamfeed, binary samples), making a clean C reimplementation both smaller and more maintainable than attempting to port the desktop stack. This approach gives precise control over memory allocation with pre-allocated pools and no hidden heap usage.
+The LSL wire protocol is straightforward (UDP discovery, TCP streamfeed, binary samples), making a clean C reimplementation both smaller and more maintainable than attempting to port the desktop stack.
+This approach gives precise control over memory allocation with pre-allocated pools and no hidden heap usage.
 
 ## Quick Start
 
@@ -89,7 +96,8 @@ lsl_esp32_outlet_t outlet = lsl_esp32_create_outlet(info, 0, 360);
 lsl_esp32_push_sample_f(outlet, data, 0.0);  // encrypted on the wire
 ```
 
-The desktop must have the same Ed25519 keypair configured in `lsl_api.cfg`. See [examples/secure_outlet](examples/secure_outlet/) for a complete example.
+The desktop must have the same Ed25519 keypair configured in `lsl_api.cfg`.
+See [examples/secure_outlet](examples/secure_outlet/) for a complete example.
 
 ## Hardware Requirements
 
@@ -192,7 +200,8 @@ idf.py add-dependency "espressif/libsodium^1.0.20~4"
 
 ## License
 
-Secure LSL License (UCSD/SCCN). See [LICENSE](LICENSE) for details.
+Secure LSL License (UCSD/SCCN).
+See [LICENSE](LICENSE) for details.
 
 ## Acknowledgments
 

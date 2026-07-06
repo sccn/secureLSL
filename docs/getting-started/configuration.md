@@ -39,10 +39,10 @@ level = 4
 
 ### `enabled`
 
-**Type:** boolean
-**Default:** `true` (if private_key is present)
+**Type:** boolean **Default:** `true` (if private_key is present)
 
-Enables or disables security. When disabled, the device operates in legacy insecure mode.
+Enables or disables security.
+When disabled, the device operates in legacy insecure mode.
 
 ```ini
 [security]
@@ -54,10 +54,10 @@ enabled = true
 
 ### `private_key`
 
-**Type:** string (base64-encoded)
-**Required:** Yes, unless `encrypted_private_key` is set
+**Type:** string (base64-encoded) **Required:** Yes, unless `encrypted_private_key` is set
 
-The Ed25519 private key for this device. Generated automatically by `lsl-keygen`.
+The Ed25519 private key for this device.
+Generated automatically by `lsl-keygen`.
 
 ```ini
 [security]
@@ -69,10 +69,10 @@ private_key = MC4CAQAwBQYDK2VwBCIEIPt8vW9...
 
 ### `encrypted_private_key`
 
-**Type:** string (base64-encoded)
-**Required:** No (alternative to `private_key` for two-factor authentication)
+**Type:** string (base64-encoded) **Required:** No (alternative to `private_key` for two-factor authentication)
 
-The Ed25519 private key encrypted with a passphrase. Generated when `lsl-keygen` prompts for a passphrase during key generation (the default behavior).
+The Ed25519 private key encrypted with a passphrase.
+Generated when `lsl-keygen` prompts for a passphrase during key generation (the default behavior).
 This enables two-factor authentication:
 
 - **Something you have:** the key file
@@ -106,10 +106,10 @@ lsl_security_unlock("your-passphrase");
 
 ### `key_created`
 
-**Type:** ISO 8601 timestamp
-**Default:** Set by `lsl-keygen`
+**Type:** ISO 8601 timestamp **Default:** Set by `lsl-keygen`
 
-When the key was generated. Used for key rotation tracking.
+When the key was generated.
+Used for key rotation tracking.
 
 ```ini
 [security]
@@ -118,10 +118,10 @@ key_created = 2025-12-05T19:00:00Z
 
 ### `session_key_lifetime`
 
-**Type:** integer (seconds)
-**Default:** `3600` (1 hour)
+**Type:** integer (seconds) **Default:** `3600` (1 hour)
 
-How often session keys are rotated. Lower values provide more forward secrecy but slightly more overhead.
+How often session keys are rotated.
+Lower values provide more forward secrecy but slightly more overhead.
 
 ```ini
 [security]
@@ -136,10 +136,10 @@ session_key_lifetime = 3600  ; 1 hour (default)
 
 ### `public_key`
 
-**Type:** string (base64-encoded)
-**Required:** No (derived from private_key automatically)
+**Type:** string (base64-encoded) **Required:** No (derived from private_key automatically)
 
-The Ed25519 public key. Generated automatically from the private key.
+The Ed25519 public key.
+Generated automatically from the private key.
 
 ```ini
 [security]
@@ -150,7 +150,8 @@ public_key = PqyFnq8EdB4kkp88KBHZ2DuSy9qbEspO5QSUqPnUvc0=
 
 ## Device-Bound Session Tokens
 
-For passphrase-protected keys, you can create a device-bound session token to avoid entering the passphrase on every startup. The token is cryptographically bound to your specific hardware.
+For passphrase-protected keys, you can create a device-bound session token to avoid entering the passphrase on every startup.
+The token is cryptographically bound to your specific hardware.
 
 ### Creating a Session Token
 
@@ -200,8 +201,7 @@ For passphrase-protected keys, you can create a device-bound session token to av
 
 ### `level`
 
-**Type:** integer (0-6)
-**Default:** `4` (Info)
+**Type:** integer (0-6) **Default:** `4` (Info)
 
 Controls log verbosity:
 
@@ -345,8 +345,7 @@ This satisfies NIS2 multi-factor authentication requirements by combining:
 
 ### Low-Risk Environments
 
-For closed lab environments without regulatory requirements (EU CRA, NIS2, HIPAA, GDPR),
-you can skip the passphrase:
+For closed lab environments without regulatory requirements (EU CRA, NIS2, HIPAA, GDPR), you can skip the passphrase:
 
 1. **Press Enter twice** when prompted for passphrase (requires confirmation)
 2. **Use `--insecure` flag** to skip the prompt entirely (shows warning)
@@ -484,7 +483,9 @@ level = 4
 
 ### Shared Key Authorization Model
 
-Secure LSL uses a **shared keypair model** for authorization. All devices that need to communicate securely must have the **same keypair** (public + private key). Devices with different keys will be rejected as "not authorized."
+Secure LSL uses a **shared keypair model** for authorization.
+All devices that need to communicate securely must have the **same keypair** (public + private key).
+Devices with different keys will be rejected as "not authorized."
 
 This model ensures:
 

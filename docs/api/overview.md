@@ -1,6 +1,7 @@
 # API Reference
 
-Secure LSL provides APIs for C, C++, Python, and MATLAB. The API documentation is automatically generated from source code comments using Doxygen.
+Secure LSL provides APIs for C, C++, Python, and MATLAB.
+The API documentation is automatically generated from source code comments using Doxygen.
 
 ## Security-Specific Functions
 

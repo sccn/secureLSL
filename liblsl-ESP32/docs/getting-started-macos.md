@@ -16,8 +16,8 @@ brew install cmake ninja python3
 brew install clang-format cppcheck typos-cli
 ```
 
-Note: `dfu-util` is only needed for ESP32-S2/S3 boards with native USB. The
-ESP32-DevKitC v4 uses UART flashing and does not require it.
+Note: `dfu-util` is only needed for ESP32-S2/S3 boards with native USB.
+The ESP32-DevKitC v4 uses UART flashing and does not require it.
 
 Verify installations:
 
@@ -40,7 +40,8 @@ cd esp-idf
 ./install.sh esp32
 ```
 
-This downloads the Xtensa GCC toolchain, Python dependencies, and build tools. It takes 10-20 minutes depending on your connection.
+This downloads the Xtensa GCC toolchain, Python dependencies, and build tools.
+It takes 10-20 minutes depending on your connection.
 
 ### Source the environment
 
@@ -68,7 +69,8 @@ Should print something like `ESP-IDF v5.5.3`.
 
 ## 3. Connect and Identify the ESP32 Board
 
-Plug in your ESP32-DevKitC via USB. Identify the serial port:
+Plug in your ESP32-DevKitC via USB.
+Identify the serial port:
 
 ```bash
 ls /dev/cu.usb*
@@ -98,8 +100,7 @@ You can confirm the board model:
 esptool.py --port /dev/cu.usbserial-0001 chip_id
 ```
 
-Expected output includes `Chip is ESP32-D0WD-V3` or similar (older boards may
-show `ESP32-D0WDQ6`).
+Expected output includes `Chip is ESP32-D0WD-V3` or similar (older boards may show `ESP32-D0WDQ6`).
 
 ## 4. Build and Flash the Crypto Benchmark
 
@@ -165,8 +166,8 @@ git commit -m "test: verify pre-commit hooks"
 
 ## 7. WiFi Configuration
 
-ESP32 projects that use WiFi need SSID and password configured. The
-`examples/basic_outlet/` project uses Kconfig for this:
+ESP32 projects that use WiFi need SSID and password configured.
+The `examples/basic_outlet/` project uses Kconfig for this:
 
 ```bash
 cd examples/basic_outlet
@@ -195,11 +196,10 @@ You can also store credentials in `.env` (gitignored) for reference.
 - **2.4 GHz only**: ESP32 does not support 5 GHz or 6 GHz WiFi
 - **WPA2-PSK**: recommended; WPA/WPA2 mixed mode also works
 - **Same network**: your desktop and ESP32 must be on the same subnet
-  for multicast discovery to work. If your desktop is on Ethernet and
-  the ESP32 on WiFi, ensure your router forwards multicast between
-  wired and wireless clients (most do, some don't)
+for multicast discovery to work.
+If your desktop is on Ethernet and the ESP32 on WiFi, ensure your router forwards multicast between wired and wireless clients (most do, some don't)
 - **Channel**: standard 2.4 GHz channels (1-13) at 20 MHz bandwidth
-  work best; 40 MHz bandwidth on some channels may not be visible
+work best; 40 MHz bandwidth on some channels may not be visible
 
 ## 8. Testing LSL Discovery
 
@@ -228,12 +228,12 @@ Found 1 streams
 If no streams are found:
 
 1. **Check IP addresses**: both devices must be on the same subnet
-   (e.g., both `192.168.0.x`)
+(e.g., both `192.168.0.x`)
 2. **Check WiFi band**: ESP32 serial should show "Connected. IP: ..."
 3. **Try unicast**: send a UDP packet directly to the ESP32's IP:16571
-   to verify the UDP server is running
+to verify the UDP server is running
 4. **Router multicast**: some routers block multicast between WiFi
-   and Ethernet clients; connect both devices via WiFi if needed
+and Ethernet clients; connect both devices via WiFi if needed
 
 ## Quick Reference
 

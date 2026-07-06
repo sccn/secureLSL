@@ -5,7 +5,8 @@
 [![Version](https://img.shields.io/badge/version-1.16.1--secure.1.1.0-blue)](https://github.com/sccn/secureLSL)
 [![License](https://img.shields.io/badge/license-Proprietary-red)](LICENSE)
 
-Secure LSL is a drop-in replacement for [liblsl](https://github.com/sccn/liblsl) that adds transparent end-to-end encryption. Your existing LSL applications work unchanged; security is handled entirely within the library.
+Secure LSL is a drop-in replacement for [liblsl](https://github.com/sccn/liblsl) that adds transparent end-to-end encryption.
+Your existing LSL applications work unchanged; security is handled entirely within the library.
 
 > [!IMPORTANT]
 > Secure LSL is **free for non-commercial academic and non-profit research use**. Researchers and non-profit institutions may freely deploy it to secure their own Lab Streaming Layer setups and data (for example, encrypting EEG streams in a study), and may also reproduce, benchmark, verify, and modify it. Any other use, including commercial, industry, or for-profit use such as evaluation, modification, or deployment, requires a **separate license from UC San Diego** (Office of Innovation and Commercialization, innovation@ucsd.edu), which helps fund the continued maintenance and development of the platform. See [LICENSE](LICENSE).
@@ -193,10 +194,13 @@ For NIS2 compliance requiring multi-factor authentication, run `lsl-keygen` and 
 
 ## License
 
-Copyright (C) 2025-2026 The Regents of the University of California. All Rights Reserved.
+Copyright (C) 2025-2026 The Regents of the University of California.
+All Rights Reserved.
 
 Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
 
-Secure LSL is proprietary software. See [LICENSE](LICENSE) for terms.
+Secure LSL is proprietary software.
+See [LICENSE](LICENSE) for terms.
 
-This software incorporates [liblsl](https://github.com/sccn/liblsl) (MIT License) and [libsodium](https://libsodium.org/) (ISC License). The original open-source components are available from their respective repositories.
+This software incorporates [liblsl](https://github.com/sccn/liblsl) (MIT License) and [libsodium](https://libsodium.org/) (ISC License).
+The original open-source components are available from their respective repositories.

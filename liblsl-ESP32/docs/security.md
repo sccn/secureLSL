@@ -4,7 +4,8 @@ liblsl-ESP32 supports secureLSL encryption, providing end-to-end authenticated e
 
 ## Overview
 
-When security is enabled, all streaming data is encrypted with ChaCha20-Poly1305 (the same algorithm used by desktop secureLSL). This provides:
+When security is enabled, all streaming data is encrypted with ChaCha20-Poly1305 (the same algorithm used by desktop secureLSL).
+This provides:
 
 - **Confidentiality**: streaming data cannot be read by eavesdroppers
 - **Integrity**: tampered packets are detected and rejected
@@ -15,11 +16,15 @@ When security is enabled, all streaming data is encrypted with ChaCha20-Poly1305
 
 ### Shared Keypair Model
 
-All devices in a lab share the same Ed25519 keypair. Authorization is based on public key matching: if a connecting device presents the same public key, it is authorized to communicate. This is the same model used by desktop secureLSL.
+All devices in a lab share the same Ed25519 keypair.
+Authorization is based on public key matching: if a connecting device presents the same public key, it is authorized to communicate.
+This is the same model used by desktop secureLSL.
 
 ### Unanimous Enforcement
 
-Both sides must agree on security state. If the outlet has security enabled but the inlet does not (or vice versa), the connection is rejected with a 403 error. Mixed encrypted/unencrypted networks are not allowed.
+Both sides must agree on security state.
+If the outlet has security enabled but the inlet does not (or vice versa), the connection is rejected with a 403 error.
+Mixed encrypted/unencrypted networks are not allowed.
 
 ## Setup
 
@@ -96,7 +101,8 @@ void app_main(void) {
 
 ## Extracting Keys from Desktop Config
 
-The desktop's `lsl_api.cfg` contains a base64 private key (64 bytes: 32-byte seed + 32-byte public key). To extract the public key for ESP32:
+The desktop's `lsl_api.cfg` contains a base64 private key (64 bytes: 32-byte seed + 32-byte public key).
+To extract the public key for ESP32:
 
 ```python
 import base64
@@ -127,18 +133,23 @@ Keys are stored in NVS namespace `"lsl_security"`:
 | public_key | blob | 32 bytes |
 | private_key | blob | 64 bytes |
 
-Keys persist across reboots. To erase: `nvs_flash_erase()` (erases all NVS data).
+Keys persist across reboots.
+To erase: `nvs_flash_erase()` (erases all NVS data).
 
 ## Troubleshooting
 
 ### "Security mismatch: server=enabled, client=disabled"
-Both sides must have security in the same state. Either enable security on both or disable on both.
+Both sides must have security in the same state.
+Either enable security on both or disable on both.
 
 ### "Failed to connect to outlet" with 403
-The ESP32 or desktop rejected the connection due to a security mismatch or key mismatch. Check that both sides have the same keypair.
+The ESP32 or desktop rejected the connection due to a security mismatch or key mismatch.
+Check that both sides have the same keypair.
 
 ### "Security enabled but keys not loadable"
-No keypair is provisioned in NVS. Call `lsl_esp32_generate_keypair()` or `lsl_esp32_import_keypair()` first.
+No keypair is provisioned in NVS.
+Call `lsl_esp32_generate_keypair()` or `lsl_esp32_import_keypair()` first.
 
 ### Desktop pylsl gets 403 from secure ESP32
-Standard pylsl (liblsl v1.17+) is not compiled with security support. Use the secureLSL library built with `-DLSL_SECURITY=ON`.
+Standard pylsl (liblsl v1.17+) is not compiled with security support.
+Use the secureLSL library built with `-DLSL_SECURITY=ON`.

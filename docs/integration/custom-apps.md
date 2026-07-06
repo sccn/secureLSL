@@ -6,7 +6,9 @@ How to integrate Secure LSL into your own applications.
 
 ## Overview
 
-The key principle of Secure LSL is **transparency**. Dynamically linked applications work by pointing to liblsl-secure and configuring keys. Statically linked C++ applications need to be recompiled against liblsl-secure.
+The key principle of Secure LSL is **transparency**.
+Dynamically linked applications work by pointing to liblsl-secure and configuring keys.
+Statically linked C++ applications need to be recompiled against liblsl-secure.
 
 ---
 
@@ -45,7 +47,8 @@ The key principle of Secure LSL is **transparency**. Dynamically linked applicat
 
 ### Step 2: Generate and Distribute the Shared Keypair
 
-All devices in a lab must share the **same** keypair. Generate on one device, then export and import on all others.
+All devices in a lab must share the **same** keypair.
+Generate on one device, then export and import on all others.
 
 **On the first device (key generator):**
 
@@ -66,7 +69,8 @@ All devices in a lab must share the **same** keypair. Generate on one device, th
 
 ### Step 3: Run Your Application
 
-No code changes needed. Your application now uses encrypted streams.
+No code changes needed.
+Your application now uses encrypted streams.
 
 ---
 

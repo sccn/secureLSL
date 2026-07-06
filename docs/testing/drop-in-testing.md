@@ -1,8 +1,6 @@
 # Drop-In Compatibility Testing Protocol
 
-This page describes how to verify that LSL applications work as drop-in replacements when liblsl-secure is substituted for the standard liblsl binary,
-documents what "verified" and "unverified" mean in the compatibility table, and explains
-how contributors can submit test results.
+This page describes how to verify that LSL applications work as drop-in replacements when liblsl-secure is substituted for the standard liblsl binary, documents what "verified" and "unverified" mean in the compatibility table, and explains how contributors can submit test results.
 
 ---
 
@@ -14,9 +12,9 @@ how contributors can submit test results.
 | **Unverified (source-verified)** | Source code was inspected and confirms dynamic linking (so drop-in replacement is expected to work), but the app has not been run against liblsl-secure. |
 | **Rebuild Required** | App uses static linking or bundles liblsl at compile time. It must be recompiled against liblsl-secure. |
 
-Unverified entries are honest placeholders. They reflect what the source code
-promises, not what has been demonstrated in practice. Do not treat them as
-guarantees.
+Unverified entries are honest placeholders.
+They reflect what the source code promises, not what has been demonstrated in practice.
+Do not treat them as guarantees.
 
 ---
 
@@ -37,8 +35,9 @@ Community contributions for those platforms are welcome.
 
 ### Python Apps (via pylsl)
 
-Python apps use pylsl, which loads liblsl via `ctypes.CDLL()`. No recompilation
-is needed. Point pylsl at liblsl-secure with the `PYLSL_LIB` environment variable.
+Python apps use pylsl, which loads liblsl via `ctypes.CDLL()`.
+No recompilation is needed.
+Point pylsl at liblsl-secure with the `PYLSL_LIB` environment variable.
 
 **Prerequisites:**
 
@@ -65,10 +64,10 @@ is needed. Point pylsl at liblsl-secure with the `PYLSL_LIB` environment variabl
     ```
 
 3. Launch the application normally. If it creates or resolves LSL streams,
-   those streams are now encrypted.
+those streams are now encrypted.
 
 4. Run a secure outlet in another terminal and confirm the app discovers and
-   receives data:
+receives data:
 
     ```python
     python3 -c "import pylsl; o = pylsl.StreamOutlet(pylsl.StreamInfo('Test','EEG',1,100,pylsl.cf_float32,'test')); [o.push_sample([float(i)]) or __import__('time').sleep(0.01) for i in range(500)]"
@@ -101,7 +100,7 @@ MATLAB apps use MEX wrappers that call `dlopen()`/`LoadLibrary()` at runtime.
     ```
 
 3. In MATLAB, run the app's standard startup. Confirm stream creation and
-   resolution work.
+resolution work.
 
 4. Check for a security version string from the library:
 
@@ -116,9 +115,8 @@ MATLAB apps use MEX wrappers that call `dlopen()`/`LoadLibrary()` at runtime.
 
 ### C++ Apps (dynamically linked via CMake)
 
-Most C++ LSL apps link `LSL::lsl` via CMake's `find_package(LSL)`. At runtime
-they load whichever `liblsl.dylib` / `liblsl.so` / `lsl.dll` is on the library
-search path.
+Most C++ LSL apps link `LSL::lsl` via CMake's `find_package(LSL)`.
+At runtime they load whichever `liblsl.dylib` / `liblsl.so` / `lsl.dll` is on the library search path.
 
 **Test procedure:**
 
@@ -160,17 +158,13 @@ search path.
 
 4. Verify by running a secure outlet and checking that the app receives data.
 
-**Apps in this category**: LabRecorder, XDFStreamer, BrainProducts, BrainAmpSeries,
-BioSemi, emotiv, Cognionics, EGIAmpServer, eegoSports, TobiiPro,
-TobiiStreamEngine, SMIEyetracker, Input, GameController, Gamepad, OptiTrack,
-AudioCapture, OpenVR, MQTT, SerialPort, OpenEphysLSL-Inlet.
+**Apps in this category**: LabRecorder, XDFStreamer, BrainProducts, BrainAmpSeries, BioSemi, emotiv, Cognionics, EGIAmpServer, eegoSports, TobiiPro, TobiiStreamEngine, SMIEyetracker, Input, GameController, Gamepad, OptiTrack, AudioCapture, OpenVR, MQTT, SerialPort, OpenEphysLSL-Inlet.
 
 ---
 
 ### C# Apps (via liblsl-Csharp or LSL4Unity)
 
-C# apps use P/Invoke (`[DllImport("lsl")]`) which resolves the native library
-at runtime.
+C# apps use P/Invoke (`[DllImport("lsl")]`) which resolves the native library at runtime.
 
 **Test procedure:**
 
@@ -192,8 +186,7 @@ at runtime.
 
 ### Java Apps (via liblsl-Java)
 
-Java apps use JNA (`Native.load()`), which searches `java.library.path` for
-the native library.
+Java apps use JNA (`Native.load()`), which searches `java.library.path` for the native library.
 
 **Test procedure:**
 
@@ -211,16 +204,16 @@ the native library.
 
 ### Unreal Engine Plugin (plugin-UE4)
 
-The UE4 plugin uses delay-loaded DLL loading. The pre-built binary in
-`ThirdParty/` must be replaced.
+The UE4 plugin uses delay-loaded DLL loading.
+The pre-built binary in `ThirdParty/` must be replaced.
 
 **Test procedure:**
 
 1. Navigate to `plugin-UE4/ThirdParty/` and find the platform-specific
-   `lsl.dll` (Windows) or equivalent.
+`lsl.dll` (Windows) or equivalent.
 2. Replace it with liblsl-secure renamed to match.
 3. Rebuild the plugin (UE4 may require a full project rebuild after plugin
-   binary changes).
+binary changes).
 4. Test stream creation and resolution in a UE4 project.
 
 ---
@@ -247,8 +240,8 @@ Consult each app's build documentation for details.
 
 ## Verified Test Results
 
-The following apps have been run end-to-end against liblsl-secure on the
-hardware described above. Results are from December 2025.
+The following apps have been run end-to-end against liblsl-secure on the hardware described above.
+Results are from December 2025.
 
 | App | Platform | Test Date | Result | Notes |
 |-----|----------|-----------|--------|-------|
@@ -262,19 +255,17 @@ All other apps in the compatibility table are Unverified (source-verified).
 
 ## How to Contribute Test Results
 
-If you have verified that an app works (or does not work) with liblsl-secure,
-please open a GitHub issue or pull request with the following information:
+If you have verified that an app works (or does not work) with liblsl-secure, please open a GitHub issue or pull request with the following information:
 
 1. **App name and version** (e.g., LabRecorder v2.16.0)
 2. **liblsl-secure version** (e.g., 1.16.1-secure.1.1.0)
 3. **Platform**: OS, CPU architecture (e.g., Ubuntu 24.04, x86-64)
 4. **Test performed**: Brief description (e.g., "ran secure outlet, app discovered
-   stream, recorded 30 s of data, XDF file opened in MNE-Python")
+stream, recorded 30 s of data, XDF file opened in MNE-Python")
 5. **Result**: PASS or FAIL (with error message if FAIL)
 6. **Date**
 
-Open an issue at:
-[https://github.com/sccn/secureLSL/issues](https://github.com/sccn/secureLSL/issues)
+Open an issue at: [https://github.com/sccn/secureLSL/issues](https://github.com/sccn/secureLSL/issues)
 
 Label it `app-compatibility`.
 
@@ -284,26 +275,22 @@ Label it `app-compatibility`.
 
 ### App loads the wrong liblsl
 
-**Symptom**: Streams are not encrypted; `library_info()` does not show a
-security version.
+**Symptom**: Streams are not encrypted; `library_info()` does not show a security version.
 
-**Fix**: Check `PYLSL_LIB`, `DYLD_LIBRARY_PATH` / `LD_LIBRARY_PATH`, or the
-app bundle's `Frameworks/` directory. The secure library must appear before any
-system-installed liblsl.
+**Fix**: Check `PYLSL_LIB`, `DYLD_LIBRARY_PATH` / `LD_LIBRARY_PATH`, or the app bundle's `Frameworks/` directory.
+The secure library must appear before any system-installed liblsl.
 
 ### Security mismatch (403 error)
 
-**Symptom**: Connection is refused with "403 Security required" or "403 Public
-key mismatch".
+**Symptom**: Connection is refused with "403 Security required" or "403 Public key mismatch".
 
-**Fix**: Ensure all devices share the same keypair. Generate on one device,
-export with `lsl-keygen --export`, and import on each other device with
-`lsl-keygen --import`. Verify fingerprints match with `lsl-config --show-public`.
+**Fix**: Ensure all devices share the same keypair.
+Generate on one device, export with `lsl-keygen --export`, and import on each other device with `lsl-keygen --import`.
+Verify fingerprints match with `lsl-config --show-public`.
 
 ### SIP blocks DYLD_LIBRARY_PATH on macOS
 
-**Symptom**: GUI apps on macOS ignore `DYLD_LIBRARY_PATH` due to System
-Integrity Protection.
+**Symptom**: GUI apps on macOS ignore `DYLD_LIBRARY_PATH` due to System Integrity Protection.
 
 **Fix**: Copy liblsl-secure into the app bundle:
 

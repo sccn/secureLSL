@@ -1,6 +1,7 @@
 # Integration Tests
 
-This page documents manual end-to-end integration testing performed on real hardware. All scenarios listed below have been verified to pass.
+This page documents manual end-to-end integration testing performed on real hardware.
+All scenarios listed below have been verified to pass.
 
 ---
 
@@ -101,37 +102,47 @@ Network configuration for cross-machine tests: 802.11ac WiFi (home router), ping
 
 **Scenario:** Standard LSL communication with security disabled on both sides.
 
-**Result:** 50 samples received correctly. No errors.
+**Result:** 50 samples received correctly.
+No errors.
 
 ---
 
 ### 3. Lab Recorder Integration Tests
 
-All Lab Recorder tests used a build linked against `liblsl-secure.dylib`. The secure library is a drop-in replacement: the Lab Recorder binary is identical; only the library it loads changes.
+All Lab Recorder tests used a build linked against `liblsl-secure.dylib`.
+The secure library is a drop-in replacement: the Lab Recorder binary is identical; only the library it loads changes.
 
 #### 3.1 Secure stream discovery with lock icon
 
-Lab Recorder discovers a secure stream and displays a lock icon at the end of the stream name. Security status is visible in the stream list.
+Lab Recorder discovers a secure stream and displays a lock icon at the end of the stream name.
+Security status is visible in the stream list.
 
 **Result:** PASS.
 
 #### 3.2 Secure outlet + secure recorder (recording works)
 
-A Raspberry Pi 5 outlet streams with security enabled. Lab Recorder on the Mac Mini, configured with the same shared keypair, records the stream.
+A Raspberry Pi 5 outlet streams with security enabled.
+Lab Recorder on the Mac Mini, configured with the same shared keypair, records the stream.
 
-**Result:** Recording successful. 28 KB XDF file created in 12 seconds. Log shows "Secure session established" and "Using encrypted data transfer".
+**Result:** Recording successful.
+28 KB XDF file created in 12 seconds.
+Log shows "Secure session established" and "Using encrypted data transfer".
 
 #### 3.3 Insecure outlet + insecure recorder (baseline)
 
 Both sides have no security configuration.
 
-**Result:** Recording successful. No errors.
+**Result:** Recording successful.
+No errors.
 
 #### 3.4 Secure outlet + insecure recorder (rejection)
 
-A Raspberry Pi 5 outlet streams with security enabled. Lab Recorder has no security credentials.
+A Raspberry Pi 5 outlet streams with security enabled.
+Lab Recorder has no security credentials.
 
-**Result:** Connection rejected repeatedly. Log shows `403 Security required but client has no security enabled`. Recording file created but remains at 0 KB.
+**Result:** Connection rejected repeatedly.
+Log shows `403 Security required but client has no security enabled`.
+Recording file created but remains at 0 KB.
 
 #### 3.5 Security mismatch detection UI (pre-recording check)
 
@@ -149,7 +160,9 @@ When a user selects a secure stream in Lab Recorder configured without security 
 
 ### 4. Cross-Machine Tests (Mac Mini + Raspberry Pi 5)
 
-Tests were conducted over **802.11ac WiFi** (ping latency 5-8 ms). All functional integration tests in this section used WiFi only; the Ethernet configuration was evaluated separately in the performance benchmarks (see [Benchmarks](benchmarks.md)). The shared keypair was distributed using `lsl-keygen --export` on the Mac Mini and `lsl-keygen --import` on the Raspberry Pi 5.
+Tests were conducted over **802.11ac WiFi** (ping latency 5-8 ms).
+All functional integration tests in this section used WiFi only; the Ethernet configuration was evaluated separately in the performance benchmarks (see [Benchmarks](benchmarks.md)).
+The shared keypair was distributed using `lsl-keygen --export` on the Mac Mini and `lsl-keygen --import` on the Raspberry Pi 5.
 
 #### 4.1 Matching keys: accepted
 
@@ -187,7 +200,9 @@ Tests were conducted over **802.11ac WiFi** (ping latency 5-8 ms). All functiona
 - Raspberry Pi 5 runs secure outlet.
 - Mac Mini runs Lab Recorder with the same shared keypair.
 
-**Result:** PASS. 32 KB XDF file recorded in 14 seconds. Lock icon visible for the remote stream.
+**Result:** PASS.
+32 KB XDF file recorded in 14 seconds.
+Lock icon visible for the remote stream.
 
 ---
 
@@ -252,7 +267,8 @@ The following error and rejection scenarios have been validated:
 
 ## How to Reproduce
 
-See the [Benchmarks](benchmarks.md) page for hardware setup. For integration testing:
+See the [Benchmarks](benchmarks.md) page for hardware setup.
+For integration testing:
 
 ```bash
 # Build

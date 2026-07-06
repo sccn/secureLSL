@@ -303,7 +303,8 @@ Common security error messages:
 
 ## Thread Safety
 
-All security functions are thread-safe. Multiple threads can:
+All security functions are thread-safe.
+Multiple threads can:
 
 - Query security status simultaneously
 - Create multiple secure outlets/inlets

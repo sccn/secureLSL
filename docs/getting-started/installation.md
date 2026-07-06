@@ -132,7 +132,8 @@ export DYLD_LIBRARY_PATH=/path/to/secureLSL/liblsl/build:$DYLD_LIBRARY_PATH  # m
 
 ## Python (pylsl)
 
-pylsl automatically finds liblsl. To use the secure version:
+pylsl automatically finds liblsl.
+To use the secure version:
 
 ### Option 1: Environment Variable
 

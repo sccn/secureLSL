@@ -6,11 +6,14 @@ A neuroscientist-friendly explanation of the encryption, without requiring a cry
 
 ## The Big Picture
 
-When you stream EEG data across your lab network, that data normally travels as plain numbers that anyone on the network can read. Secure LSL wraps that data in encryption so that only the intended recipient can read it.
+When you stream EEG data across your lab network, that data normally travels as plain numbers that anyone on the network can read.
+Secure LSL wraps that data in encryption so that only the intended recipient can read it.
 
 **Without Secure LSL:** EEG Amplifier sends plain data over the network; anyone can read it.
 
-**With Secure LSL:** EEG Amplifier encrypts data before sending. On the network it looks like random noise. LabRecorder decrypts it back to the original data.
+**With Secure LSL:** EEG Amplifier encrypts data before sending.
+On the network it looks like random noise.
+LabRecorder decrypts it back to the original data.
 
 ---
 
@@ -20,12 +23,14 @@ Secure LSL provides two complementary protections:
 
 ### 1. Device Authentication (Who are you?)
 
-Before any data flows, devices prove their authorization using **digital signatures**. All authorized devices in your lab share the same Ed25519 keypair, distributed through a secure export/import process:
+Before any data flows, devices prove their authorization using **digital signatures**.
+All authorized devices in your lab share the same Ed25519 keypair, distributed through a secure export/import process:
 
 - **Private key**: Shared only among authorized lab devices (kept secret from outsiders)
 - **Public key**: Used to verify that a connecting device holds the same keypair
 
-When your EEG amplifier connects to LabRecorder, both sides verify they hold the same keypair by comparing public keys. This prevents:
+When your EEG amplifier connects to LabRecorder, both sides verify they hold the same keypair by comparing public keys.
+This prevents:
 
 - Unauthorized devices from connecting
 - Attackers from impersonating your equipment
@@ -36,7 +41,8 @@ When your EEG amplifier connects to LabRecorder, both sides verify they hold the
 
 ### 2. Data Encryption (Keep it secret)
 
-Once devices are authenticated, all data is encrypted using a **session key** that only those two devices know. This means:
+Once devices are authenticated, all data is encrypted using a **session key** that only those two devices know.
+This means:
 
 - Eavesdroppers see only random-looking bytes
 - Even if someone captures your network traffic, they can't read your biosignals
@@ -74,9 +80,12 @@ We use algorithms trusted by banks, governments, and security experts worldwide:
 
 ## Authenticated Encryption: Why It Matters
 
-Traditional encryption only hides data. An attacker could still modify the encrypted bytes, potentially causing unpredictable results when decrypted.
+Traditional encryption only hides data.
+An attacker could still modify the encrypted bytes, potentially causing unpredictable results when decrypted.
 
-**Authenticated encryption** solves this by adding an **authentication tag** to each packet. This tag is like a tamper-evident seal. When decrypting:
+**Authenticated encryption** solves this by adding an **authentication tag** to each packet.
+This tag is like a tamper-evident seal.
+When decrypting:
 
 1. First, verify the authentication tag
 2. If verification fails, **reject the packet entirely** (tampered or corrupted)
@@ -96,9 +105,13 @@ This means:
 
 ## Replay Attack Prevention
 
-An attacker could capture legitimate encrypted packets and re-transmit them later. While they can't read or modify the data, replaying old packets could corrupt your recording with duplicate samples or confuse real-time processing systems.
+An attacker could capture legitimate encrypted packets and re-transmit them later.
+While they can't read or modify the data, replaying old packets could corrupt your recording with duplicate samples or confuse real-time processing systems.
 
-Secure LSL prevents this using **nonces** (numbers used once). Each packet includes a monotonically increasing nonce. The inlet tracks seen nonces and rejects any that aren't newer than the last. This provides:
+Secure LSL prevents this using **nonces** (numbers used once).
+Each packet includes a monotonically increasing nonce.
+The inlet tracks seen nonces and rejects any that aren't newer than the last.
+This provides:
 
 - **Replay detection**: Old packets are caught
 - **Out-of-order tolerance**: A sliding window allows minor reordering
@@ -108,7 +121,8 @@ Secure LSL prevents this using **nonces** (numbers used once). Each packet inclu
 
 ## Session Keys and Forward Secrecy
 
-Your device's key is long-lived (you generate it once). But what if it's ever compromised?
+Your device's key is long-lived (you generate it once).
+But what if it's ever compromised?
 
 Secure LSL protects against this with **session keys**:
 
@@ -165,7 +179,8 @@ The sub-millisecond latency overhead is negligible for biosignal applications wh
 | **Replay** | Nonce tracking | Old packets can't be re-injected |
 | **Future** | Session keys | Past recordings stay safe |
 
-All of this happens transparently inside the LSL library. Dynamically linked applications require no code changes; statically linked C++ applications need recompilation.
+All of this happens transparently inside the LSL library.
+Dynamically linked applications require no code changes; statically linked C++ applications need recompilation.
 
 ---
 

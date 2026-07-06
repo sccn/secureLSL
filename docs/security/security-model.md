@@ -6,9 +6,13 @@ Threat model and security guarantees for Secure LSL.
 
 ## Architecture Overview
 
-Secure LSL implements a centrally-managed authorization model designed for the operational realities of research and clinical data acquisition environments. A trusted administrator generates a keypair and provisions it to all authorized devices within a deployment. Private keys are encrypted at rest using a passphrase-derived key, providing resistance against offline attacks on stolen configuration files.
+Secure LSL implements a centrally-managed authorization model designed for the operational realities of research and clinical data acquisition environments.
+A trusted administrator generates a keypair and provisions it to all authorized devices within a deployment.
+Private keys are encrypted at rest using a passphrase-derived key, providing resistance against offline attacks on stolen configuration files.
 
-Data transmission uses unique per-connection session keys derived through key agreement and key derivation, with authenticated encryption providing confidentiality, integrity, and replay protection. This architecture establishes a cryptographically enforced trust boundary at the network level while remaining transparent to dynamically linked applications, requiring no code changes for the vast majority of existing LSL software. Statically linked C++ applications must be recompiled against liblsl-secure.
+Data transmission uses unique per-connection session keys derived through key agreement and key derivation, with authenticated encryption providing confidentiality, integrity, and replay protection.
+This architecture establishes a cryptographically enforced trust boundary at the network level while remaining transparent to dynamically linked applications, requiring no code changes for the vast majority of existing LSL software.
+Statically linked C++ applications must be recompiled against liblsl-secure.
 
 ---
 
@@ -91,7 +95,8 @@ Secure LSL does NOT protect against:
 
 ## Unanimous Security Enforcement
 
-Secure LSL enforces unanimous security: either all devices are secure, or all are insecure. Mixed environments are rejected.
+Secure LSL enforces unanimous security: either all devices are secure, or all are insecure.
+Mixed environments are rejected.
 
 ### Enforcement Matrix
 

@@ -9,7 +9,8 @@
 
 **Transparent encryption for Lab Streaming Layer biosignal streaming**
 
-Secure LSL adds end-to-end encryption to LSL without requiring any changes to your existing applications. Your EEG, eye tracking, and other biosignal data is automatically protected using the same cryptographic standards trusted by banks and governments.
+Secure LSL adds end-to-end encryption to LSL without requiring any changes to your existing applications.
+Your EEG, eye tracking, and other biosignal data is automatically protected using the same cryptographic standards trusted by banks and governments.
 
 ---
 
@@ -64,7 +65,9 @@ Get secure streaming in a few steps:
 2. **Secure Connection (TCP)** -- When LabRecorder connects, both sides exchange keys and verify each other's identity before any data flows.
 3. **Encrypted Streaming** -- Every sample is encrypted with a session key before transmission and verified on receipt. Replay protection ensures old packets cannot be re-injected.
 
-The encryption happens inside the LSL library itself. Applications that load liblsl dynamically (pylsl, MATLAB) see regular LSL data; the encryption/decryption is completely invisible. Statically linked C++ applications need to be recompiled against liblsl-secure.
+The encryption happens inside the LSL library itself.
+Applications that load liblsl dynamically (pylsl, MATLAB) see regular LSL data; the encryption/decryption is completely invisible.
+Statically linked C++ applications need to be recompiled against liblsl-secure.
 
 [Learn More :material-arrow-right:](security/how-it-works.md){ .md-button }
 
@@ -88,7 +91,9 @@ The encryption happens inside the LSL library itself. Applications that load lib
 - **Languages**: C/C++, Python (pylsl), MATLAB
 - **Hardware**: x86_64, ARM (Apple Silicon, Raspberry Pi)
 
-Most LSL applications load liblsl dynamically and require no code changes; just point them to liblsl-secure. Statically linked applications need recompilation. See the [Migration Guide](getting-started/migration.md) for details.
+Most LSL applications load liblsl dynamically and require no code changes; just point them to liblsl-secure.
+Statically linked applications need recompilation.
+See the [Migration Guide](getting-started/migration.md) for details.
 
 ---
 
@@ -133,8 +138,10 @@ Secure LSL helps you meet:
 
 ## License
 
-Copyright (C) 2025-2026 The Regents of the University of California. All Rights Reserved.
+Copyright (C) 2025-2026 The Regents of the University of California.
+All Rights Reserved.
 
 Author: Seyed Yahya Shirazi, SCCN, INC, UCSD
 
-Secure LSL is proprietary software. See [LICENSE](../LICENSE) for terms.
+Secure LSL is proprietary software.
+See [LICENSE](../LICENSE) for terms.

@@ -8,7 +8,8 @@ Quick answers to common questions about Secure LSL.
 
 ### Do I need to change my existing code?
 
-**For dynamically linked applications** (pylsl, MATLAB, most LSL apps): no code changes needed. Just point them to liblsl-secure (e.g., set `PYLSL_LIB` for Python) and set up keys.
+**For dynamically linked applications** (pylsl, MATLAB, most LSL apps): no code changes needed.
+Just point them to liblsl-secure (e.g., set `PYLSL_LIB` for Python) and set up keys.
 
 **For statically linked C++ applications**: you need to recompile against liblsl-secure.
 
@@ -23,13 +24,15 @@ Setup steps:
 
 ### Is this an official LSL project?
 
-Secure LSL is developed by the SCCN lab, the original creators of LSL. It is designed as a backward-compatible extension that can be merged into the main LSL codebase.
+Secure LSL is developed by the SCCN lab, the original creators of LSL.
+It is designed as a backward-compatible extension that can be merged into the main LSL codebase.
 
 ---
 
 ### What happens if I don't generate keys?
 
-If no keys are configured, the device operates in insecure (legacy) mode. However:
+If no keys are configured, the device operates in insecure (legacy) mode.
+However:
 
 - It can only connect to other insecure devices
 - Any secure device on the network will refuse connections
@@ -53,13 +56,16 @@ Specifically, we use Ed25519 for device identity and ChaCha20-Poly1305 for authe
 
 ### Can someone decrypt my recorded data if they get my keys later?
 
-**No**, due to forward secrecy. Each connection uses ephemeral session keys derived from a fresh key exchange. Even if your device's private key is compromised later, past recordings cannot be decrypted.
+**No**, due to forward secrecy.
+Each connection uses ephemeral session keys derived from a fresh key exchange.
+Even if your device's private key is compromised later, past recordings cannot be decrypted.
 
 ---
 
 ### What if someone captures my encrypted network traffic?
 
-They'll see only random-looking bytes. Without the session keys (which exist only in memory during the connection), the data is computationally infeasible to decrypt.
+They'll see only random-looking bytes.
+Without the session keys (which exist only in memory during the connection), the data is computationally infeasible to decrypt.
 
 ---
 
@@ -109,7 +115,8 @@ The fingerprint is a unique identifier derived from the outlet's public key.
 
 ### How much overhead does encryption add?
 
-Minimal. In our benchmarks (64ch @ 1000Hz):
+Minimal.
+In our benchmarks (64ch @ 1000Hz):
 
 | Platform | Overhead | Added Latency |
 |----------|----------|---------------|
@@ -130,7 +137,8 @@ This is negligible for biosignal applications.
 
 ### Does encryption affect time synchronization?
 
-Time synchronization remains accurate. The encryption overhead is deterministic and sub-millisecond, well within LSL's synchronization tolerances.
+Time synchronization remains accurate.
+The encryption overhead is deterministic and sub-millisecond, well within LSL's synchronization tolerances.
 
 ---
 
@@ -138,7 +146,8 @@ Time synchronization remains accurate. The encryption overhead is deterministic 
 
 ### Does it work with LabRecorder?
 
-Yes. Use the secure version of LabRecorder, which shows lock icons for encrypted streams:
+Yes.
+Use the secure version of LabRecorder, which shows lock icons for encrypted streams:
 
 ```
 Available Streams:
@@ -150,13 +159,16 @@ Available Streams:
 
 ### Does it work with MATLAB?
 
-Yes. MATLAB uses the same liblsl library, so encryption works automatically once you point MATLAB to the secure liblsl.
+Yes.
+MATLAB uses the same liblsl library, so encryption works automatically once you point MATLAB to the secure liblsl.
 
 ---
 
 ### Can I mix secure and insecure devices?
 
-**No**, and this is intentional. Mixed environments create security gaps. Secure LSL enforces unanimous security:
+**No**, and this is intentional.
+Mixed environments create security gaps.
+Secure LSL enforces unanimous security:
 
 - All secure → encrypted communication
 - All insecure → legacy communication
@@ -185,7 +197,8 @@ You can override this with the `LSLAPICFG` environment variable.
 
 ### Can multiple users share a computer?
 
-Each user account needs the shared lab key imported into their `~/.lsl_api/lsl_api.cfg`. Run `./lsl-keygen --import lab_shared.key.enc` under each user account that will use LSL.
+Each user account needs the shared lab key imported into their `~/.lsl_api/lsl_api.cfg`.
+Run `./lsl-keygen --import lab_shared.key.enc` under each user account that will use LSL.
 
 ---
 
@@ -195,13 +208,15 @@ Each user account needs the shared lab key imported into their `~/.lsl_api/lsl_a
 ./lsl-keygen --force
 ```
 
-The `--force` flag overwrites existing keys. Note that this creates a new keypair; you will need to re-export and re-import on all other lab devices.
+The `--force` flag overwrites existing keys.
+Note that this creates a new keypair; you will need to re-export and re-import on all other lab devices.
 
 ---
 
 ### How do I set up keys on multiple devices?
 
-Secure LSL uses a **shared keypair model**: all devices in your lab must have the same key. Generate and export on one device, then import on every device (including the one that generated it):
+Secure LSL uses a **shared keypair model**: all devices in your lab must have the same key.
+Generate and export on one device, then import on every device (including the one that generated it):
 
 ```bash
 # On the primary device, generate and export
@@ -221,7 +236,9 @@ See the [Multi-Device Setup](getting-started/configuration.md#multi-device-setup
 
 ### "Connection refused: security mismatch"
 
-Devices have different keypairs (or one is missing a key). All devices must share the same keypair. Import the shared key on any device that lacks it:
+Devices have different keypairs (or one is missing a key).
+All devices must share the same keypair.
+Import the shared key on any device that lacks it:
 
 ```bash
 ./lsl-keygen --import lab_shared.key.enc

@@ -1,6 +1,7 @@
 # Why Encryption Matters for Biosignal Research
 
-You might wonder: "I'm just streaming EEG in my lab. Why do I need encryption?"
+You might wonder: "I'm just streaming EEG in my lab.
+Why do I need encryption?"
 
 This page explains why security matters even in research settings, and why Secure LSL was designed the way it is.
 
