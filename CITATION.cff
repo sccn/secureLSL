@@ -36,5 +36,7 @@ keywords:
   - neurotechnology
   - EEG
   - real-time-data-streaming
-# A concept (all-versions) Zenodo DOI will be added here after the first
-# tagged release is archived.
+# Zenodo DOI for the archived release. If a concept (all-versions) DOI is
+# preferred here so it always resolves to the latest release, replace this with
+# the concept DOI shown on the Zenodo record.
+doi: "10.5281/zenodo.21211688"
