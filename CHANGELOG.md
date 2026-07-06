@@ -5,7 +5,11 @@ All notable changes to Secure LSL will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.16.1-secure.1.1.0-alpha] - 2026-03-18
+## [1.16.1-secure.1.1.0] - 2026-07-05
+
+### Changed
+- First stable release of the security layer (dropped the `alpha` stage)
+- License clarified to permit non-commercial academic reproduction, benchmarking, and modification to verify or extend results; commercial and competitive use remain licensed separately
 
 ### Added
 - **ESP32 support**: liblsl-ESP32, a clean-room C reimplementation of the LSL wire protocol for ESP32 microcontrollers with full secureLSL encryption
@@ -25,7 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial security layer implementation
 - Ed25519 device authentication
 - ChaCha20-Poly1305 authenticated encryption
-- X25519 + HKDF session key derivation
+- X25519 + BLAKE2b session key derivation
 - Replay attack prevention with nonce tracking
 - Security configuration via lsl_api.cfg [security] section
 - Key generation tool: `lsl-keygen`

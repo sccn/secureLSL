@@ -196,7 +196,7 @@ Before anything else, verify you're using the secure library:
     // Secure build: 1
     // Base version: 1.16.1
     // Security version: 1.0.0
-    // Full version: 1.16.1-secure.1.0.0-alpha
+    // Full version: 1.16.1-secure.1.1.0
     ```
 
 === "Command Line"

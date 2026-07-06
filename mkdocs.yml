@@ -89,8 +89,8 @@ extra:
   slsl_version:
     base: "1.16.1"
     security: "1.1.0"
-    stage: "alpha"
-    full: "1.16.1-secure.1.1.0-alpha"
+    stage: ""
+    full: "1.16.1-secure.1.1.0"
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/sccn/secureLSL

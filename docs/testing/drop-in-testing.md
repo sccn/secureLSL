@@ -266,7 +266,7 @@ If you have verified that an app works (or does not work) with liblsl-secure,
 please open a GitHub issue or pull request with the following information:
 
 1. **App name and version** (e.g., LabRecorder v2.16.0)
-2. **liblsl-secure version** (e.g., 1.16.1-secure.1.0.0-alpha)
+2. **liblsl-secure version** (e.g., 1.16.1-secure.1.1.0)
 3. **Platform**: OS, CPU architecture (e.g., Ubuntu 24.04, x86-64)
 4. **Test performed**: Brief description (e.g., "ran secure outlet, app discovered
    stream, recorded 30 s of data, XDF file opened in MNE-Python")

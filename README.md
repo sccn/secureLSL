@@ -2,7 +2,7 @@
 
 **Encrypted Lab Streaming Layer for clinical and research environments**
 
-[![Version](https://img.shields.io/badge/version-1.16.1--secure.1.0.0--alpha-blue)](https://github.com/sccn/secureLSL)
+[![Version](https://img.shields.io/badge/version-1.16.1--secure.1.1.0-blue)](https://github.com/sccn/secureLSL)
 [![License](https://img.shields.io/badge/license-Proprietary-red)](LICENSE)
 
 Secure LSL is a drop-in replacement for [liblsl](https://github.com/sccn/liblsl) that adds transparent end-to-end encryption. Your existing LSL applications work unchanged; security is handled entirely within the library.
@@ -54,7 +54,7 @@ if (!lsl::is_secure_build()) {
     std::cerr << "WARNING: Not using secure LSL!" << std::endl;
 }
 std::cout << "Version: " << lsl::full_version() << std::endl;
-// Output: 1.16.1-secure.1.0.0-alpha
+// Output: 1.16.1-secure.1.1.0
 ```
 
 **Command line:**
@@ -107,14 +107,14 @@ The secure library uses a distinct name to prevent confusion:
 Secure LSL uses a dual versioning scheme:
 
 - **Base version**: Tracks upstream liblsl (e.g., 1.16.1)
-- **Security version**: Tracks security layer (e.g., 1.0.0-alpha)
-- **Full version**: Combined (e.g., 1.16.1-secure.1.0.0-alpha)
+- **Security version**: Tracks security layer (e.g., 1.1.0)
+- **Full version**: Combined (e.g., 1.16.1-secure.1.1.0)
 
 Query versions at runtime:
 ```c
 lsl_base_version();      // "1.16.1"
 lsl_security_version();  // "1.0.0"
-lsl_full_version();      // "1.16.1-secure.1.0.0-alpha"
+lsl_full_version();      // "1.16.1-secure.1.1.0"
 lsl_is_secure_build();   // 1
 
 // Passphrase-protected keys

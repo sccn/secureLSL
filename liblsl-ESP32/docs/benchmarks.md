@@ -10,7 +10,7 @@ Performance measurements for liblsl-ESP32, including encryption overhead analysi
 | SRAM | 520 KB |
 | WiFi | 802.11n, 2.4 GHz, channel 10 |
 | RSSI | -36 to -38 dBm |
-| Desktop | Mac (Apple Silicon), secureLSL v1.16.1-secure.1.0.0-alpha |
+| Desktop | Mac (Apple Silicon), secureLSL v1.16.1-secure.1.1.0 |
 | FreeRTOS | Tick rate 1000 Hz |
 | Test duration | 30s per config (60s for encryption overhead) |
 

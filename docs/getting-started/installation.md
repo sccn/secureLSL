@@ -99,7 +99,7 @@ ls -l liblsl-secure.so      # Linux
 ./lsl-config --help
 
 # Verify it's a secure build
-./lslver  # Should show "security:1.0.0-alpha" in output
+./lslver  # Should show "security:1.1.0" in output
 ```
 
 ---
