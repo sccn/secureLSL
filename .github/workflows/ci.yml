@@ -4,7 +4,21 @@ on:
   push:
     branches: ['*']
     tags: ['*']
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'LICENSE'
+      - 'CITATION.cff'
+      - '.zenodo.json'
   pull_request:
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'LICENSE'
+      - 'CITATION.cff'
+      - '.zenodo.json'
   workflow_dispatch:
     inputs:
       cmake_extra:
