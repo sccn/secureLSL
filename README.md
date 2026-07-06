@@ -176,7 +176,7 @@ cmake --build . --config Release
 | Data Encryption | ChaCha20-Poly1305 | Protect biosignal confidentiality |
 | Tamper Detection | AEAD authentication | Detect any modification |
 | Replay Prevention | Monotonic nonces | Block packet replay attacks |
-| Key Exchange | X25519 + HKDF | Secure session key derivation |
+| Key Exchange | X25519 + BLAKE2b | Secure session key derivation |
 
 For detailed security information, see [Security Architecture](docs/security/how-it-works.md).
 
