@@ -145,7 +145,13 @@ Available separately at: https://github.com/sccn/liblsl
 - Loguru: Logging (Public Domain)
 - Catch2: Testing framework (Boost Software License)
 
-Each incorporated component remains subject to its own license. This license governs the Secure LSL additions and the integrated work; it does not alter, and does not purport to alter, the terms under which those components were originally released. Their verbatim notices are reproduced in THIRD-PARTY-NOTICES.md in the repository root, as those licenses require.
+COMPONENT LICENSING POLICY
+
+Incorporated components retain their original licenses. Where a component was released under the MIT License, it remains under the MIT License in this Repository; the same applies to components under the ISC License, the Boost Software License, or a public-domain dedication. Their verbatim notices are reproduced in THIRD-PARTY-NOTICES.md in the repository root, and each component directory retains its own license file.
+
+Client applications and language bindings distributed as components of this Repository, together with the integration code added to them, are made available under the license of the upstream project each derives from, not under the proprietary terms of this license. That integration code consists of interface declarations and status-display logic that call the public library API; it contains no cryptographic implementation.
+
+This license governs the Secure LSL security implementation, the modifications made to the core library, and the integrated work as a whole. It does not alter, and does not purport to alter, the terms under which any incorporated component was originally released.
 
 IMPORTANT: The availability of these components under open-source licenses does NOT grant any rights to the Secure LSL additions or to the integrated work beyond what is explicitly stated in this license.
 The integration, modification, and novel implementations in this Repository create a new proprietary product.

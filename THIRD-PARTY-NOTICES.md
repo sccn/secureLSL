@@ -1,9 +1,14 @@
 # Third-Party Notices
 
 Secure LSL incorporates the open-source components listed below.
-Each remains subject to its own license; the terms in `LICENSE` apply to the
-Secure LSL additions and to the integrated work, not to these components in
-their original form. The verbatim notices follow, as those licenses require.
+Each retains its original license: MIT components remain MIT, ISC remain ISC,
+and so on. The proprietary terms in `LICENSE` apply to the Secure LSL security
+implementation and the integrated work, not to these components. Client
+applications and language bindings shipped as components of this repository are
+likewise available under their upstream licenses, including the integration
+code added to them, which calls the public library API and contains no
+cryptographic implementation. The verbatim notices follow, as those licenses
+require.
 
 ---
 
