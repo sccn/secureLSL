@@ -42,6 +42,25 @@ Instead, replace the liblsl library it loads with `liblsl-secure`:
 
     Place `lsl-secure.dll` in the same directory as `LabRecorder.exe`, renaming it to `lsl.dll` (or whichever DLL name LabRecorder expects), so it is found before the system version.
 
+### Build the in-repo component (security indicators)
+
+The drop-in approach above encrypts your recordings but leaves the interface
+unchanged. To also get the security indicators (lock icons, version information,
+mismatch dialogs), build the LabRecorder component shipped in this repository:
+
+```bash
+cd apps/LabRecorder
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DLSL_INSTALL_ROOT=/path/to/secureLSL/liblsl/build
+cmake --build build --config Release
+```
+
+This is the upstream LabRecorder with security-status support added, and it
+remains under upstream's MIT license (see `apps/LabRecorder/LICENSE`). Either
+route gives you encrypted recording; the component adds visibility into whether
+a given stream is encrypted.
+
+---
+
 ### Configure Security
 
 Ensure you have generated keys:
