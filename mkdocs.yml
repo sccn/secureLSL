@@ -131,6 +131,7 @@ nav:
   - ESP32:
     - Overview: esp32/overview.md
   - Integration:
+    - pylsl (Python): integration/pylsl.md
     - LabRecorder: integration/labrecorder.md
     - SigVisualizer: integration/sigvisualizer.md
     - Custom Applications: integration/custom-apps.md
