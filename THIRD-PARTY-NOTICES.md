@@ -39,9 +39,9 @@ Catch2 (https://github.com/catchorg/Catch2), Boost Software License
 
 ## pylsl (MIT License)
 
-Python binding, vendored as a component at `bindings/pylsl/`. Retains its
+Python binding, vendored as a component at `apps/pylsl/`. Retains its
 upstream MIT license, including the security integration added here; the notice
-is also kept at `bindings/pylsl/LICENSE`.
+is also kept at `apps/pylsl/LICENSE`.
 
 ```
 Copyright (c) 2012-2018 Christian A. Kothe

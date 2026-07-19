@@ -7,7 +7,7 @@ Using the security-enabled Python binding.
 ## Overview
 
 `pylsl` is the Python binding for Lab Streaming Layer. The security-enabled
-version ships as a component of this repository at `bindings/pylsl/` and adds:
+version ships as a component of this repository at `apps/pylsl/` and adds:
 
 - automatic preference for `liblsl-secure` when it is present
 - library-level version queries (base, security, and full version strings)
@@ -21,7 +21,7 @@ It remains under its upstream MIT license, including the security additions.
 ## Install
 
 ```bash
-pip install -e bindings/pylsl
+pip install -e apps/pylsl
 ```
 
 The binding locates `liblsl-secure` automatically when it is installed. To point
