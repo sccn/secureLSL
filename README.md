@@ -204,4 +204,5 @@ Secure LSL is proprietary software.
 See [LICENSE](LICENSE) for terms.
 
 This software incorporates [liblsl](https://github.com/sccn/liblsl) (MIT License) and [libsodium](https://libsodium.org/) (ISC License).
+Verbatim notices for all incorporated components are in [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
 The original open-source components are available from their respective repositories.
