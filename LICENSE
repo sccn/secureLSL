@@ -147,7 +147,7 @@ Available separately at: https://github.com/sccn/liblsl
 
 COMPONENT LICENSING POLICY
 
-Incorporated components retain their original licenses. Where a component was released under the MIT License, it remains under the MIT License in this Repository; the same applies to components under the ISC License, the Boost Software License, or a public-domain dedication. Their verbatim notices are reproduced in THIRD-PARTY-NOTICES.md in the repository root, and each component directory retains its own license file.
+Incorporated components retain their original licenses. Where a component was released under the MIT License, it remains under the MIT License in this Repository; the same applies to components under the ISC License, the Boost Software License, the GNU General Public License, or a public-domain dedication. A component under a copyleft license (for example the GNU GPL) is aggregated with the other contents of this Repository within the meaning of that license, and is not brought under these proprietary terms; its own license governs it in full. Their verbatim notices are reproduced in THIRD-PARTY-NOTICES.md in the repository root, and each component directory retains its own license file.
 
 Client applications and language bindings distributed as components of this Repository, together with the integration code added to them, are made available under the license of the upstream project each derives from, not under the proprietary terms of this license. That integration code consists of interface declarations and status-display logic that call the public library API; it contains no cryptographic implementation.
 
