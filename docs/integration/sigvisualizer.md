@@ -20,16 +20,20 @@ When used with secure liblsl, it automatically:
 
 ### Install Dependencies
 
-SigVisualizer requires Python with PyQt5 and pylsl:
+The security-aware SigVisualizer ships as a component of this repository at
+`apps/SigVisualizer/`. It depends on the in-repo `pylsl` component (`apps/pylsl/`)
+for the stream-security API.
 
 ```bash
-# Clone SigVisualizer
-git clone https://github.com/labstreaminglayer/App-SigVisualizer.git
-cd App-SigVisualizer
+cd apps/SigVisualizer
 
-# Install dependencies
-pip install PyQt5 pylsl numpy
+# Install dependencies, including the in-repo pylsl component
+pip install PyQt5 numpy
+pip install -e ../pylsl
 ```
+
+This component is licensed under the GNU General Public License v3.0 (see
+`apps/SigVisualizer/LICENSE`), inherited from upstream SigVisualizer.
 
 ### Configure Secure liblsl
 

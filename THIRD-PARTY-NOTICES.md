@@ -99,6 +99,17 @@ THE SOFTWARE.
 
 ---
 
+## SigVisualizer (GNU General Public License v3.0)
+
+Signal-display application, vendored as a component at `apps/SigVisualizer/`.
+Unlike the other components, its upstream is GPLv3, so this component and the
+security integration added to it are GPLv3. The full license text is at
+`apps/SigVisualizer/LICENSE`; it is not inlined here because of its length.
+The component is aggregated with the rest of this repository under GPLv3
+section 5 and is not subject to the proprietary Secure LSL terms.
+
+---
+
 ## asio (Boost Software License 1.0)
 
 Copyright (c) 2003-2021 Christopher M. Kohlhoff (chris at kohlhoff dot com)
