@@ -3,7 +3,6 @@
 **Encrypted Lab Streaming Layer for clinical and research environments**
 
 [![Version](https://img.shields.io/badge/version-1.16.1--secure.1.1.0-blue)](https://github.com/sccn/secureLSL)
-[![License](https://img.shields.io/badge/license-Proprietary-red)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21211688.svg)](https://doi.org/10.5281/zenodo.21211688)
 
 Secure LSL is a drop-in replacement for [liblsl](https://github.com/sccn/liblsl) that adds transparent end-to-end encryption.
